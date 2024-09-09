@@ -1,6 +1,7 @@
-import { StyleSheet, Image, ScrollView } from 'react-native';
+import { StyleSheet, Image, ScrollView, Pressable } from 'react-native';
 import { Text, View } from '@/src/components/Themed';
 import { Entry } from '../types';
+import { Link } from 'expo-router';
 
 type EntryListItemProps = {
     entry: Entry,
@@ -8,14 +9,16 @@ type EntryListItemProps = {
 
 const EntryListItem = ({entry} : EntryListItemProps) => {
   return(
-    <View style={styles.container}>
+    <Link href={`/entries/${entry.id}`} asChild>
+    <Pressable style={styles.container}>
       
       <Image source={{ uri: entry.image}} style={styles.image}></Image>
       <Text style={styles.title}>{entry.title}</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <Text style={styles.entryText} numberOfLines={4} ellipsizeMode='tail'>{entry.entry_text}</Text>
 
-    </View>
+    </Pressable>
+    </Link>
   );
 };
 

@@ -26,11 +26,12 @@ export default function TabLayout() {
         // Disable the static render of the header on web
         headerShown: useClientOnlyValue(false, true),
       }}>
+
+      <Tabs.Screen name="index" options={{href: null,  title: 'Home', headerShown: false,}} />
       
       <Tabs.Screen
-        name="home"
+        name="entries"
         options={{
-          title: 'Home',
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
           headerShown: false,  // Hide header only for the home screen
           headerRight: () => (

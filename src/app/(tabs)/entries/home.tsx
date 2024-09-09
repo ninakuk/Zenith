@@ -18,7 +18,7 @@ export default function HomeScreen() {
       {/* Animated Container for Image */}
       <Animated.View style={[styles.imageContainer, { height: imageContainerHeight }]}>
         <Image 
-          source={require('../../../assets/images/2024-09-08 11_54_50-Untitled.png')}
+          source={require('../../../../assets/images/2024-09-08 11_54_50-Untitled.png')}
           style={styles.image}
           resizeMode="contain" // Ensures image scales proportionally
         />
