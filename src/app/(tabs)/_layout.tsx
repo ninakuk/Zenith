@@ -33,7 +33,7 @@ export default function TabLayout() {
         name="entries"
         options={{
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
-          headerShown: false,  // Hide header only for the home screen
+          headerShown: false, 
           headerRight: () => (
             <Link href="/modal" asChild>
               <Pressable>

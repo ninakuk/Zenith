@@ -25,12 +25,20 @@ export const loadEntries = async (): Promise<JournalEntry[]> => {
     }
 };
 
+// Fetch a single journal entry by ID
+export const fetchEntryById = async (id: string): Promise<JournalEntry | null> => {
+    const entries = await loadEntries(); // Load all entries
+    const entry = entries.find(e => e.id === id); // Find the entry by ID
+    return entry || null; // Return the entry or null if not found
+};
+
 // Create a new journal entry
-export const createEntry = async (title: string, content?: string): Promise<void> => {
+export const createEntry = async (title: string, content: string, valence: string): Promise<void> => {
     const newEntry: JournalEntry = {
         id: Date.now().toString(), // Generate a unique ID
         title: title,
-        //content: content,
+        content: content,
+        valence: valence,
         //createdAt: new Date().toISOString(), // Optional field for the creation date
     };
 
