@@ -1,6 +1,6 @@
 // src/services/journalService.ts
 import * as FileSystem from 'expo-file-system';
-import { JournalEntry } from '../models/JournalEntry';
+import { Emotion, JournalEntry } from '../models/JournalEntry';
 
 const ENTRIES_FILE_PATH = `${FileSystem.documentDirectory}journalEntries.json`;
 
@@ -33,16 +33,25 @@ export const fetchEntryById = async (id: string): Promise<JournalEntry | null> =
 };
 
 // Create a new journal entry
-export const createEntry = async (title: string, content: string, valence: string): Promise<void> => {
+export const createEntry = async (
+    title: string, 
+    content: string, 
+    sentimentScore: number, 
+    sentimentWord: Emotion, 
+    emotionSliderScore: number, 
+    emotionSliderWord: Emotion
+): Promise<void> => {
     const newEntry: JournalEntry = {
-        id: Date.now().toString(), // Generate a unique ID
+        id: Date.now().toString(), //generate an ID
         title: title,
         content: content,
-        valence: valence,
-        //createdAt: new Date().toISOString(), // Optional field for the creation date
+        sentimentScore: sentimentScore,  
+        sentimentWord: sentimentWord,  
+        emotionSliderScore: emotionSliderScore, 
+        emotionSliderWord: emotionSliderWord, 
     };
 
-    const entries = await loadEntries();
+    const entries = await loadEntries(); // Load existing entries
     entries.push(newEntry); // Add the new entry to the list
 
     await FileSystem.writeAsStringAsync(ENTRIES_FILE_PATH, JSON.stringify(entries)); // Save the updated list

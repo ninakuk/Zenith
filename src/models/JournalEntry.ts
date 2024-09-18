@@ -2,12 +2,13 @@ export interface JournalEntry {
     id: string; 
     title: string; 
     content?: string; 
+    emotionSliderScore?: number; 
+    emotionSliderWord?: Emotion; 
+    sentimentScore?: number; 
+    sentimentWord?: Emotion;
+    image?: string;
     //createdAt?: string; 
     //updatedAt?: string;
-    emotion?: Emotion,
-    image?: string,
-    valence?: string
 }
 
-
-export type Emotion = 'Happy' | 'Sad' | 'Neutral'
+export type Emotion = 'Happy' | 'Sad' | 'Neutral';
