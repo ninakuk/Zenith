@@ -68,7 +68,8 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   main: {
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    paddingBottom:100,
   },
   avatarImageContainer: {
     justifyContent: 'center',

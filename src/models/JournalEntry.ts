@@ -7,6 +7,7 @@ export interface JournalEntry {
     sentimentScore?: number; 
     sentimentWord?: Emotion;
     image?: string;
+    selectedPrompt: string;
     //createdAt?: string; 
     //updatedAt?: string;
 }

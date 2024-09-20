@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { createEntry } from '../helpers/fileSystemCRUD';
 import Button from './Button';
@@ -7,6 +7,8 @@ import { Basic } from './RichTextEditor';
 import Sentiment from 'sentiment';
 import Slider from '@react-native-community/slider';
 import { Emotion } from '../models/JournalEntry';
+import { analyzeSentiment } from '../helpers/sentiment';
+import { getRandomPrompt } from '../models/Prompts';
 
 
 //TODO when calculating valence, compare it to the emotion as ground truth
@@ -16,11 +18,14 @@ const AddEntry: React.FC = () => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [emotionValue, setEmotionValue] = useState(0);
-    const [sliderTouched, setSliderTouched] = useState(false); // State to check if slider is touched
-
+    const [sliderTouched, setSliderTouched] = useState(false);
     const [entryType, setEntryType] = useState<'emotion' | 'freeform' | null>(null);
+    const [isTyping, setIsTyping] = useState(false); // New state to track if the user is typing
+    const selectedPromptRef = useRef<string>("null");
 
     const router = useRouter();
+    let blurTimeout: NodeJS.Timeout; // Variable to store the timeout ID
+
 
     useFocusEffect(
         useCallback(() => {
@@ -29,27 +34,16 @@ const AddEntry: React.FC = () => {
             setEmotionValue(0);
             setSliderTouched(false);
             setEntryType(null);
-        }, []) 
+            setIsTyping(false);
+            selectedPromptRef.current = " ";
+        }, [])
     )
 
-    const analyzeSentiment = (text: string) => {
-        const sentiment = new Sentiment();
-        const result = sentiment.analyze(text);
-        const score = result.score;
-
-        // Convert score to emotion word
-        let emotion: Emotion;
-        if (score > 0) {
-            emotion = 'Happy';
-        } else if (score < 0) {
-            emotion = 'Sad';
-        } else {
-            emotion = 'Neutral';
+    useEffect(() => {
+        if (entryType === 'emotion' && !selectedPromptRef.current) {
+            selectedPromptRef.current = getRandomPrompt(emotionValue); // Set the prompt only once
         }
-
-        return { score, emotion };
-    };
-
+    }, [emotionValue, entryType]);
 
     const handleCreateEntry = async () => {
         if (title && content) {
@@ -62,80 +56,123 @@ const AddEntry: React.FC = () => {
             const emotionSliderScore = emotionValue
             const emotionSliderWord = emotionSliderScore > 0 ? 'Happy' : emotionSliderScore < 0 ? 'Sad' : 'Neutral';
 
-            await createEntry(title, content, sentimentScore, sentimentWord, emotionSliderScore, emotionSliderWord);
+            await createEntry(title, content, sentimentScore, sentimentWord, emotionSliderScore, emotionSliderWord, selectedPromptRef.current,);
 
             //clear input fields and navigate back
             setTitle('');
             setContent('');
             setEntryType(null);
             setSliderTouched(false);
+            setIsTyping(false);
 
             router.push('/(tabs)/entries/home');
         } else {
             alert('Please enter both a title and content.');
         }
+
+
+    };
+
+
+    const handleBlur = () => {
+        blurTimeout = setTimeout(() => {
+            setIsTyping(false);
+        }, 100); // Delay setting `isTyping` to false to allow smooth transitions between inputs
+    };
+
+    const handleFocus = () => {
+        if (blurTimeout) {
+            clearTimeout(blurTimeout); // Clear timeout if a new input gets focused quickly
+        }
+
+        if (!selectedPromptRef.current && entryType === 'emotion') {
+            selectedPromptRef.current = getRandomPrompt(emotionValue);
+        }
+
+        setIsTyping(true);
     };
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
 
-            <View style={{ flex: 1 }}>
-                <Text style={styles.header}>Add New Entry</Text>
-
-                {/* Slider for emotion input */}
-                <Text style={styles.sliderLabel}>How are you feeling? (Sad - Happy)</Text>
-                <Slider
-                    style={styles.slider}
-                    minimumValue={-5}
-                    maximumValue={5}
-                    step={1}
-                    value={emotionValue}
-                    minimumTrackTintColor="#0000FF"
-                    maximumTrackTintColor="#FF0000"
-                    thumbTintColor="#000000"
-                    onSlidingStart={() => setSliderTouched(true)}
-                    onValueChange={setEmotionValue} // Update the emotion value continuously while sliding
-                    onSlidingComplete={(value) => {
-                        console.log('Final slider value:', value); // Handle the final value if needed
-                    }}
-                />
-                <Text style={styles.sliderValue}>Emotion: {emotionValue.toFixed(1)}</Text>
-
-
-
-                {sliderTouched && (
+            <ScrollView style={[{ flexGrow: 1 }, styles.container]}>
+                {!isTyping && (
                     <View>
-                        <Button text="Write about this emotion" onPress={() => setEntryType('emotion')} />
-                        <Button text="Free form entry" onPress={() => setEntryType('freeform')} />
-                    </View>
-                )}
+                        {/* Slider for emotion input */}
+                        <Text style={styles.sliderLabel}>How are you feeling/ How would you rate your day? (negative - positive)</Text>
+                        <Slider
+                            style={styles.slider}
+                            minimumValue={-5}
+                            maximumValue={5}
+                            step={1}
+                            value={emotionValue}
+                            minimumTrackTintColor="#0000FF"
+                            maximumTrackTintColor="#FF0000"
+                            thumbTintColor="#000000"
+                            onSlidingStart={() => setSliderTouched(true)}
+                            onValueChange={(value) => {
+                                setEmotionValue(value);
+                                selectedPromptRef.current = "";
+                            }} />
+                        {/* <Text style={styles.sliderValue}>Emotion: {emotionValue.toFixed(1)}</Text> */}
+
+                        {sliderTouched && (
+                            <View>
+                                <Button text="Write about this emotion" onPress={() => setEntryType('emotion')} />
+                                <Button text="Free form entry" onPress={() => setEntryType('freeform')} />
+                            </View>
+                        )}
+                    </View>)}
 
                 {entryType && (
-                    <View>
+                    <View style={{ flex: 1 }}>
                         {entryType === 'emotion' && (
-                        <Text style={styles.sliderValue}>*prompt for this emotion* {emotionValue.toFixed(1)}</Text>
+                            <Text style={styles.sliderValue}>{selectedPromptRef.current}</Text>
                         )}
                         {entryType === 'freeform' && (
-                        <Text style={styles.sliderValue}>*generic positive prompt* {emotionValue.toFixed(1)}</Text>
+                            <Text style={styles.sliderValue}>
+                                *generic positive prompt*
+                            </Text>
                         )}
 
                         <TextInput
-                            style={styles.input}
+                            style={[
+                                styles.input,
+                                {
+                                    flex: isTyping ? 1 : undefined,
+                                    height: isTyping ? '100%' : Math.max(40, content.length * 1),
+                                },
+                            ]}
                             placeholder="Title"
                             value={title}
                             onChangeText={setTitle}
+                            onFocus={handleFocus}
+                            onBlur={handleBlur}
                         />
+
                         <TextInput
-                            style={[styles.input, { height: Math.max(40, content.length * 1) }]}
+                            style={[
+                                styles.input,
+                                {
+                                    flex: isTyping ? 1 : undefined,
+                                    height: isTyping ? '100%' : Math.max(100, content.length * 1),
+                                    paddingBottom: 20
+                                },
+                                { paddingBottom: 120 }
+
+                            ]}
                             placeholder="Content"
                             value={content}
                             onChangeText={setContent}
                             multiline={true}
+                            onFocus={handleFocus}
+                            onBlur={handleBlur}
                         />
-                        <Button text="Save" onPress={handleCreateEntry} />
+
+                        {!isTyping && <Button text="Save" onPress={handleCreateEntry} />}
                     </View>
                 )}
-            </View>
+            </ScrollView>
         </TouchableWithoutFeedback>
 
     );
@@ -159,9 +196,9 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 5,
         padding: 10,
-        marginBottom: 20,
         fontSize: 16,
         color: 'black',
+        margin: 20,
     },
     richTextEditor: {
         height: 200,
@@ -176,7 +213,7 @@ const styles = StyleSheet.create({
     slider: {
         width: '100%',
         height: 40,
-        marginBottom: 20,
+        marginBottom: 10,
     },
     sliderValue: {
         fontSize: 16,

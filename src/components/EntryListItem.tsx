@@ -14,7 +14,7 @@ const EntryListItem = ({entry} : EntryListItemProps) => {
       
       {/* <Image source={{ uri: entry.image}} style={styles.image}></Image> */}
       <Text style={styles.title}>{entry.title} </Text>
-      <Text style={{fontStyle: 'italic', fontSize: 12,}}>valence: {entry.valence}</Text>
+      <Text style={{fontStyle: 'italic', fontSize: 12,}}>valence: {entry.sentimentWord}</Text>
 
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <Text style={styles.entryText} numberOfLines={4} ellipsizeMode='tail'>{entry.content}</Text>

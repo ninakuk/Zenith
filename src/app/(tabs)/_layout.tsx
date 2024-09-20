@@ -25,6 +25,8 @@ export default function TabLayout() {
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         // Disable the static render of the header on web
         headerShown: useClientOnlyValue(false, true),
+        tabBarHideOnKeyboard: true,
+
       }}>
 
       <Tabs.Screen name="index" options={{href: null,  title: 'Home', headerShown: false,}} />
@@ -34,20 +36,6 @@ export default function TabLayout() {
         options={{
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
           headerShown: false, 
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }: { pressed: boolean }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
         }}
       />
 

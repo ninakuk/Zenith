@@ -15,9 +15,7 @@ export const loadEntries = async (): Promise<JournalEntry[]> => {
         }
 
         const jsonString = await FileSystem.readAsStringAsync(ENTRIES_FILE_PATH);
-        const entries = JSON.parse(jsonString) as JournalEntry[];
-
-        console.log('Journal Entries:', entries); // Log the entries to the console
+        const entries = JSON.parse(jsonString) as JournalEntry[];        
         return entries;  // Use the model here
     } catch (error) {
         console.error('Error loading journal entries:', error);
@@ -39,7 +37,8 @@ export const createEntry = async (
     sentimentScore: number, 
     sentimentWord: Emotion, 
     emotionSliderScore: number, 
-    emotionSliderWord: Emotion
+    emotionSliderWord: Emotion,
+    selectedPrompt: string,
 ): Promise<void> => {
     const newEntry: JournalEntry = {
         id: Date.now().toString(), //generate an ID
@@ -49,6 +48,7 @@ export const createEntry = async (
         sentimentWord: sentimentWord,  
         emotionSliderScore: emotionSliderScore, 
         emotionSliderWord: emotionSliderWord, 
+        selectedPrompt: selectedPrompt
     };
 
     const entries = await loadEntries(); // Load existing entries

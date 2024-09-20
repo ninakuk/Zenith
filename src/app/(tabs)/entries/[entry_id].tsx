@@ -4,6 +4,7 @@ import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import Button from '@/src/components/Button';
 import { JournalEntry } from '@/src/models/JournalEntry';
 import { fetchEntryById, deleteEntry, updateEntry } from '@/src/helpers/fileSystemCRUD';
+import Slider from '@react-native-community/slider';
 
 const emotions = ['sad', 'happy', 'neutral'];
 //TODO make emotions be part of entry object, not jus added here
@@ -22,7 +23,7 @@ export default function EntryDetailScreen() {
     const [isEditing, setIsEditing] = useState(false);
     const [title, setTitle] = useState('');
     const [entryText, setEntryText] = useState('');
-    const [selectedEmotion, setSelectedEmotion] = useState('happy');
+    const [emotionValue, setEmotionValue] = useState(0);
 
     useEffect(() => {
         const loadEntry = async () => {
@@ -32,7 +33,7 @@ export default function EntryDetailScreen() {
                     setEntry(fetchedEntry);
                     setTitle(fetchedEntry.title || '');
                     setEntryText(fetchedEntry.content || '');
-                    setSelectedEmotion(fetchedEntry.emotion || 'happy');
+                    setEmotionValue(fetchedEntry.emotionSliderScore || 0);
                 }
             }
         };
@@ -44,7 +45,6 @@ export default function EntryDetailScreen() {
         if (entry) {
             await updateEntry(id, { title, content: entryText });
             setIsEditing(false);
-            router.push('/(tabs)/entries/home');
         }
     };
 
@@ -82,7 +82,7 @@ export default function EntryDetailScreen() {
                     onChangeText={setTitle}
                 />
             ) : (
-                <Text style={styles.title}>{title}</Text>
+                <></>
             )}
 
             {isEditing ? (
@@ -96,20 +96,20 @@ export default function EntryDetailScreen() {
                 <Text>{entryText}</Text>
             )}
 
-            <Text>Emotions: </Text>
-            <View style={styles.emotions}>
-                {emotions.map((emotion) => (
-                    <Pressable
-                        onPress={() => { setSelectedEmotion(emotion); }}
-                        style={[styles.emotion, { backgroundColor: selectedEmotion === emotion ? '#B3EBF2' : '#779ca1' }]}
-                        key={emotion}
-                    >
-                        <Text style={[styles.emotionText, { color: selectedEmotion === emotion ? 'black' : '#becbcc' }]}>
-                            {emotion}
-                        </Text>
-                    </Pressable>
-                ))}
-            </View>
+
+                <Slider
+                disabled={!isEditing}
+                    style={styles.slider}
+                    minimumValue={-5}
+                    maximumValue={5}
+                    step={1}
+                    value={emotionValue}
+                    onValueChange={setEmotionValue}
+                    minimumTrackTintColor="#0000FF"
+                    maximumTrackTintColor="#FF0000"
+                    thumbTintColor="#000000"
+                />
+           
 
             <Button onPress={isEditing ? handleSave : () => setIsEditing(true)} text={isEditing ? "Save Entry" : "Edit Entry"} />
             <Button onPress={handleDelete} text="Delete Entry" />
@@ -151,5 +151,10 @@ const styles = StyleSheet.create({
     },
     emotionText: {
         fontSize: 20,
+    },
+    slider: {
+        width: '100%',
+        height: 40,
+        marginBottom: 10,
     },
 });
