@@ -58,8 +58,8 @@ export default function HomeScreen() {
       url="https://public.rive.app/community/runtime-files/2195-4346-avatar-pack-use-case.riv"
       artboardName="Avatar 1"
       stateMachineName="avatar"
-      autoplay={true}
-      style={{width: 400, height: 400}}
+      //autoplay={true}
+      style={{width: 400, height: 400, backgroundColor:"red"}}
       ref={riveRef}
       fit={Fit.FitHeight}
   />
@@ -70,10 +70,7 @@ export default function HomeScreen() {
         keyExtractor={item => item.id}
         contentContainerStyle={{ gap: 10, padding: 10 }}
         contentInset={{ bottom: 130 }}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: false } // Set to true for better performance, but won't work with some styles
-        )}
+        
         renderItem={({ item }) => <EntryListItem entry={item} />}
       />
     </View>
@@ -83,7 +80,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   main: {
     backgroundColor: 'white',
-    paddingBottom:100,
+    flex:1,
   },
   avatarImageContainer: {
     justifyContent: 'center',

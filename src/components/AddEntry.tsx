@@ -12,7 +12,7 @@ import { getRandomPrompt } from '../models/Prompts';
 
 
 //TODO when calculating valence, compare it to the emotion as ground truth
-
+//TODO Content doesnt show when exiting writing mode
 const AddEntry: React.FC = () => {
     //const editorRef = useRef<RichEditor>(null);
     const [title, setTitle] = useState('');
