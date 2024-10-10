@@ -131,7 +131,7 @@ const AddEntry: React.FC = () => {
                         )}
                         {entryType === 'freeform' && (
                             <Text style={styles.sliderValue}>
-                                *generic positive prompt*
+                                *positive psychology prompt (gratitude)*
                             </Text>
                         )}
 

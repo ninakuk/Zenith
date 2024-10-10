@@ -4,10 +4,14 @@ import EntryListItem from '@/src/components/EntryListItem';
 import { deleteEntry, loadEntries, updateEntry } from '../../../helpers/fileSystemCRUD';
 import { useFocusEffect } from 'expo-router';
 import React from 'react';
+import Rive, { Fit, RiveRef } from 'rive-react-native';
+
 
 export default function HomeScreen() {
   const [entries, setEntries] = useState<any[]>([]);
   const scrollY = useRef(new Animated.Value(0)).current; // Create animated value
+
+  const riveRef = useRef<RiveRef | null>(null);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -42,13 +46,23 @@ export default function HomeScreen() {
   return (
     <View style={styles.main}>
       {/* Animated Container for avatar image */}
-      <Animated.View style={[styles.avatarImageContainer, { height: imageContainerHeight }]}>
+      {/* <Animated.View style={[styles.avatarImageContainer, { height: imageContainerHeight }]}>
         <Animated.Image
           source={require('../../../../assets/images/2024-09-08 11_54_50-Untitled.png')}
           style={[styles.image, { height: imageHeight }]} // Apply animated height to image
           resizeMode="contain"
         />
-      </Animated.View>
+      </Animated.View> */}
+
+      <Rive
+      url="https://public.rive.app/community/runtime-files/2195-4346-avatar-pack-use-case.riv"
+      artboardName="Avatar 1"
+      stateMachineName="avatar"
+      autoplay={true}
+      style={{width: 400, height: 400}}
+      ref={riveRef}
+      fit={Fit.FitHeight}
+  />
 
       {/* List of Journal Entries */}
       <FlatList
