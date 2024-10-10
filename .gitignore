@@ -42,4 +42,5 @@ expo-env.d.ts
 
 package-lock.json
 android/
+/android/
 ios/
