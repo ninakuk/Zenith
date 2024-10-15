@@ -6,9 +6,10 @@ import { useFocusEffect } from 'expo-router';
 import React from 'react';
 import Rive, { Fit, RiveRef } from 'rive-react-native';
 
-
 export default function HomeScreen() {
   const [entries, setEntries] = useState<any[]>([]);
+  const [riveAsset, setRiveAsset] = useState<string | undefined>();
+
   const scrollY = useRef(new Animated.Value(0)).current; // Create animated value
 
   const riveRef = useRef<RiveRef | null>(null);
@@ -55,11 +56,11 @@ export default function HomeScreen() {
       </Animated.View> */}
 
       <Rive
-      url="https://public.rive.app/community/runtime-files/2195-4346-avatar-pack-use-case.riv"
-      artboardName="Avatar 1"
-      stateMachineName="avatar"
+      resourceName="rive_2.riv"
+      artboardName="Artboard"
+      stateMachineName="State Machine 1"
       //autoplay={true}
-      style={{width: 400, height: 400, backgroundColor:"red"}}
+      style={{width: 400, height: 400}}
       ref={riveRef}
       fit={Fit.FitHeight}
   />
