@@ -6,7 +6,7 @@ export default function EntriesStack() {
             <Stack.Screen
                 name="home"
                 options={{
-                    title: "Menu"
+                    headerShown: false,
                 }}
             />
 

@@ -1,18 +1,26 @@
-const path = require('path');
-const { getDefaultConfig } = require('expo/metro-config');
+// metro.config.js
 
-module.exports = (async () => {
-  const {
-    resolver: { assetExts },
-  } = await getDefaultConfig(__dirname);
+const { getDefaultConfig } = require("@expo/metro-config");
 
-  return {
-    transformer: {
-      assetPlugins: ['expo-asset/tools/hashAssetFiles'],
-    },
-    resolver: {
-      assetExts: [...assetExts, 'riv'], // Add .riv file extension
-    },
-  };
-})();
+const defaultConfig = getDefaultConfig(__dirname);
 
+module.exports = {
+  ...defaultConfig,
+  resolver: {
+    ...defaultConfig.resolver,
+    assetExts: [
+      ...(defaultConfig.resolver.assetExts || []),
+      // Add .riv for Rive animations
+      "riv",
+    ],
+  },
+  transformer: {
+    ...defaultConfig.transformer,
+    getTransformOptions: async () => ({
+      transform: {
+        experimentalImportSupport: false,
+        inlineRequires: true,
+      },
+    }),
+  },
+};
