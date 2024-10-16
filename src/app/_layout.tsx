@@ -12,6 +12,7 @@ import 'expo-dev-client';
 
 import { useColorScheme } from '@/src/components/useColorScheme';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { AvatarProvider } from '../context/AvatarContext';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -54,15 +55,19 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
-    </ThemeProvider>
-    </GestureHandlerRootView>
+    <AvatarProvider>
 
-    
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+          </Stack>
+        </ThemeProvider>
+      </GestureHandlerRootView>
+    </AvatarProvider>
+
+
+
   );
 }

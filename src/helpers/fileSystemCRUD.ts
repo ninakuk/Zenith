@@ -1,9 +1,62 @@
 // src/services/journalService.ts
 import * as FileSystem from 'expo-file-system';
 import { Emotion, JournalEntry } from '../models/JournalEntry';
+import { AvatarSettings } from '../models/Avatar';
 
 const ENTRIES_FILE_PATH = `${FileSystem.documentDirectory}journalEntries.json`;
+const AVATAR_SETTINGS_FILE_PATH = `${FileSystem.documentDirectory}avatarSettings.json`;
 
+const defaultAvatarSettings: AvatarSettings = {
+    name: 'Avatar',
+    color: 1, // Default color
+    eyeType: 0, // Default eye type
+  };
+
+export const loadAvatarSettings = async (): Promise<AvatarSettings | null> => {
+    try {
+        const fileInfo = await FileSystem.getInfoAsync(AVATAR_SETTINGS_FILE_PATH);
+        
+        if (!fileInfo.exists) {
+            await FileSystem.writeAsStringAsync(AVATAR_SETTINGS_FILE_PATH, JSON.stringify(defaultAvatarSettings));
+            return defaultAvatarSettings;
+        }
+
+        const jsonString = await FileSystem.readAsStringAsync(AVATAR_SETTINGS_FILE_PATH);
+        const avatarSettings = JSON.parse(jsonString) as AvatarSettings;
+        return avatarSettings;
+        
+    } catch (error) {
+        console.error('Error loading avatar settings:', error);
+        throw error;
+    }
+};
+
+// Avatar Settings: Save avatar settings
+export const saveAvatarSettings = async (settings: AvatarSettings): Promise<void> => {
+    try {
+        await FileSystem.writeAsStringAsync(AVATAR_SETTINGS_FILE_PATH, JSON.stringify(settings));
+    } catch (error) {
+        console.error('Error saving avatar settings:', error);
+        throw error;
+    }
+};
+
+// Avatar Settings: Update specific fields of avatar settings
+export const updateAvatarSettings = async (updatedData: Partial<AvatarSettings>): Promise<void> => {
+    try {
+        const currentSettings = await loadAvatarSettings();
+        
+        if (currentSettings) {
+            const updatedSettings = { ...currentSettings, ...updatedData };
+            await saveAvatarSettings(updatedSettings);
+        } else {
+            console.error("No avatar settings found to update.");
+        }
+    } catch (error) {
+        console.error('Error updating avatar settings:', error);
+        throw error;
+    }
+};
 // Load all journal entries
 export const loadEntries = async (): Promise<JournalEntry[]> => {
     try {

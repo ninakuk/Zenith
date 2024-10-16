@@ -73,11 +73,10 @@ const AddEntry: React.FC = () => {
 
     };
 
-
     const handleBlur = () => {
         blurTimeout = setTimeout(() => {
             setIsTyping(false);
-        }, 100); // Delay setting `isTyping` to false to allow smooth transitions between inputs
+        }, 100);
     };
 
     const handleFocus = () => {
