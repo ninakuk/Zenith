@@ -23,6 +23,9 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarInactiveTintColor: Colors[colorScheme ?? 'light'].text,
+        tabBarActiveBackgroundColor: Colors[colorScheme ?? 'light'].tabIconDefault,
+        tabBarInactiveBackgroundColor: Colors[colorScheme ?? 'light'].tabIconDefault,
         // Disable the static render of the header on web
         headerShown: useClientOnlyValue(false, true),
         tabBarHideOnKeyboard: true,

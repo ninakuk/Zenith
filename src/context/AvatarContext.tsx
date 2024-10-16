@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { loadAvatarSettings, updateAvatarSettings } from '../helpers/fileSystemCRUD';
-
+//Context deals with savind and updating the avatar settings, then the context is what is used acreoss the app
 type AvatarContextType = {
   name: string;
   color: number | null;

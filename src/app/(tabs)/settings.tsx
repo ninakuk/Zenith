@@ -2,12 +2,17 @@ import { Pressable, StyleSheet, TextInput } from 'react-native';
 import EditScreenInfo from '@/src/components/EditScreenInfo';
 import { Text, View } from '@/src/components/Themed';
 import { RiveAnimation } from '@/src/components/RiveAnimation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Rive, { Fit, RiveRef } from 'rive-react-native';
 import { loadAvatarSettings, updateAvatarSettings } from '@/src/helpers/fileSystemCRUD';
 import { useAvatar } from '@/src/context/AvatarContext';
+import Colors from '@/src/constants/Colors';
+import { useTheme } from '@react-navigation/native';
 
 export default function SettingsScreen() {
+  const colors = useTheme().colors;
+  const styles = useMemo(() => makeStyles(colors), [colors]);
+
   const riveRef = useRef<RiveRef | null>(null);
   const { name, color, eyeType, setName, setColor, setEyeType } = useAvatar();
 
@@ -131,7 +136,7 @@ export default function SettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -142,7 +147,7 @@ const styles = StyleSheet.create({
   avatarContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: colors.background,
     width: '100%',
   },
   avatar: {

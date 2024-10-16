@@ -2,12 +2,17 @@ import { StyleSheet, Image, ScrollView, Pressable } from 'react-native';
 import { Text, View } from '@/src/components/Themed';
 import { Link } from 'expo-router';
 import { JournalEntry } from '../models/JournalEntry';
+import { useTheme } from '@react-navigation/native';
+import { useMemo } from 'react';
 
 type EntryListItemProps = {
     entry: JournalEntry,
 };
 
 const EntryListItem = ({entry} : EntryListItemProps) => {
+  const colors = useTheme().colors;
+  const styles = useMemo(() => makeStyles(colors), [colors]);
+
   return(
     <Link href={`/entries/${entry.id}`} asChild>
     <Pressable style={styles.container}>
@@ -27,13 +32,14 @@ const EntryListItem = ({entry} : EntryListItemProps) => {
 export default EntryListItem;
 
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 20,
-    backgroundColor: '#B3EBF2',
+    backgroundColor: colors.background,
+    //opacity: 0.9,
     padding: 20,
     margin:10,
   },

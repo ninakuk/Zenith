@@ -8,8 +8,8 @@ export interface JournalEntry {
     sentimentWord?: Emotion;
     image?: string;
     selectedPrompt: string;
-    //createdAt?: string; 
-    //updatedAt?: string;
+    createdAt?: Date; 
+    updatedAt?: Date;
 }
 
 export type Emotion = 'Happy' | 'Sad' | 'Neutral';

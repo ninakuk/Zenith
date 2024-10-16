@@ -24,7 +24,7 @@ export const loadAvatarSettings = async (): Promise<AvatarSettings | null> => {
         const jsonString = await FileSystem.readAsStringAsync(AVATAR_SETTINGS_FILE_PATH);
         const avatarSettings = JSON.parse(jsonString) as AvatarSettings;
         return avatarSettings;
-        
+
     } catch (error) {
         console.error('Error loading avatar settings:', error);
         throw error;
@@ -92,6 +92,8 @@ export const createEntry = async (
     emotionSliderScore: number, 
     emotionSliderWord: Emotion,
     selectedPrompt: string,
+    createdAt: Date,
+
 ): Promise<void> => {
     const newEntry: JournalEntry = {
         id: Date.now().toString(), //generate an ID
@@ -101,7 +103,8 @@ export const createEntry = async (
         sentimentWord: sentimentWord,  
         emotionSliderScore: emotionSliderScore, 
         emotionSliderWord: emotionSliderWord, 
-        selectedPrompt: selectedPrompt
+        selectedPrompt: selectedPrompt,
+        createdAt: createdAt,
     };
 
     const entries = await loadEntries(); // Load existing entries

@@ -55,8 +55,10 @@ const AddEntry: React.FC = () => {
             //get emotion value and map it to the Emotion value same as sentiment
             const emotionSliderScore = emotionValue
             const emotionSliderWord = emotionSliderScore > 0 ? 'Happy' : emotionSliderScore < 0 ? 'Sad' : 'Neutral';
+            
+            const createdAt = new Date(); // Format: YYYY-MM-DDTHH:mm:ss.sssZ
 
-            await createEntry(title, content, sentimentScore, sentimentWord, emotionSliderScore, emotionSliderWord, selectedPromptRef.current,);
+            await createEntry(title, content, sentimentScore, sentimentWord, emotionSliderScore, emotionSliderWord, selectedPromptRef.current, createdAt );
 
             //clear input fields and navigate back
             setTitle('');

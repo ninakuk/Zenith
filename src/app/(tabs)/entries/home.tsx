@@ -1,5 +1,5 @@
 import { StyleSheet, FlatList, View, Button, Text, ScrollView, TouchableOpacity } from 'react-native';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import EntryListItem from '@/src/components/EntryListItem';
 import { deleteEntry, loadAvatarSettings, loadEntries } from '../../../helpers/fileSystemCRUD';
 import { useFocusEffect } from 'expo-router';
@@ -9,8 +9,13 @@ import { Pressable, TouchableWithoutFeedback } from 'react-native-gesture-handle
 import { RiveAnimation } from '@/src/components/RiveAnimation';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAvatar } from '@/src/context/AvatarContext';
+import { useTheme } from '@react-navigation/native';
 
 export default function HomeScreen() {
+
+  const colors = useTheme().colors;
+  const styles = useMemo(() => makeStyles(colors), [colors]);
+
   const [entries, setEntries] = useState<any[]>([]);
   const riveRef = useRef<RiveRef | null>(null);
   const { name, color, eyeType, setName, setColor, setEyeType } = useAvatar();
@@ -106,7 +111,7 @@ export default function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: any) => StyleSheet.create({
   main: {
     backgroundColor: 'white',
     flex: 1,
@@ -117,8 +122,8 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   pressableAvatar: {
-    width: 150, // Match the width of the Rive animation
-    height: 250, // Match the height of the Rive animation
+    width: 150, 
+    height: 250, 
     justifyContent: 'center',
     alignItems: 'center',
     //backgroundColor:"red"
@@ -132,9 +137,9 @@ const styles = StyleSheet.create({
     //paddingVertical:20,
   },
   avatar: {
-    width: '100%', // Full width of the pressable
-    height: '100%', // Full height of the pressable
-    position: 'absolute', // Ensure the avatar is positioned inside the pressable
+    width: '100%', 
+    height: '100%', 
+    position: 'absolute', 
   },
   button: {
     padding: 10,
@@ -144,9 +149,11 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "gray",
+    backgroundColor: colors.card,
     opacity: 0.2,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20
   }
 });
+
+
