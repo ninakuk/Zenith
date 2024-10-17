@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Colors from '../constants/Colors';
-import { forwardRef } from 'react';
+import { forwardRef, useMemo } from 'react';
+import { useTheme } from '@react-navigation/native';
 
 type ButtonProps = {
   text: string;
@@ -8,6 +9,8 @@ type ButtonProps = {
 
 const Button = forwardRef<View | null, ButtonProps>(
   ({ text, ...pressableProps }, ref) => {
+    const colors = useTheme().colors;
+    const styles = useMemo(() => makeStyles(colors), [colors]);
     return (
       <Pressable ref={ref} {...pressableProps} style={styles.container}>
         <Text style={styles.text}>{text}</Text>
@@ -16,18 +19,21 @@ const Button = forwardRef<View | null, ButtonProps>(
   }
 );
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: any) => StyleSheet.create({
   container: {
-    backgroundColor: Colors.light.tint,
-    padding: 8,
+    backgroundColor: colors.card,
+    padding: 14,
     alignItems: 'center',
     borderRadius: 100,
     marginVertical: 5,
+    //width: 150,
+    flex:1,
+    marginHorizontal: 5,
   },
   text: {
     fontSize: 12,
     fontWeight: '600',
-    color: 'black',
+    color: colors.text,
   },
 });
 

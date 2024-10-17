@@ -110,6 +110,7 @@ export const createEntry = async (
     const entries = await loadEntries(); // Load existing entries
     entries.push(newEntry); // Add the new entry to the list
 
+    console.log(newEntry)
     await FileSystem.writeAsStringAsync(ENTRIES_FILE_PATH, JSON.stringify(entries)); // Save the updated list
 };
 

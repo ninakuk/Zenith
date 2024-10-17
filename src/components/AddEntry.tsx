@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { createEntry } from '../helpers/fileSystemCRUD';
 import Button from './Button';
@@ -9,6 +9,8 @@ import Slider from '@react-native-community/slider';
 import { Emotion } from '../models/JournalEntry';
 import { analyzeSentiment } from '../helpers/sentiment';
 import { getRandomPrompt } from '../models/Prompts';
+import { COLORS } from '../constants/Colors';
+import { useTheme } from '@react-navigation/native';
 
 
 //TODO when calculating valence, compare it to the emotion as ground truth
@@ -26,6 +28,8 @@ const AddEntry: React.FC = () => {
     const router = useRouter();
     let blurTimeout: NodeJS.Timeout; // Variable to store the timeout ID
 
+    const colors = useTheme().colors;
+    const styles = useMemo(() => makeStyles(colors), [colors]);
 
     useFocusEffect(
         useCallback(() => {
@@ -55,10 +59,10 @@ const AddEntry: React.FC = () => {
             //get emotion value and map it to the Emotion value same as sentiment
             const emotionSliderScore = emotionValue
             const emotionSliderWord = emotionSliderScore > 0 ? 'Happy' : emotionSliderScore < 0 ? 'Sad' : 'Neutral';
-            
+
             const createdAt = new Date(); // Format: YYYY-MM-DDTHH:mm:ss.sssZ
 
-            await createEntry(title, content, sentimentScore, sentimentWord, emotionSliderScore, emotionSliderWord, selectedPromptRef.current, createdAt );
+            await createEntry(title, content, sentimentScore, sentimentWord, emotionSliderScore, emotionSliderWord, selectedPromptRef.current, createdAt);
 
             //clear input fields and navigate back
             setTitle('');
@@ -107,8 +111,8 @@ const AddEntry: React.FC = () => {
                             maximumValue={5}
                             step={1}
                             value={emotionValue}
-                            minimumTrackTintColor="#0000FF"
-                            maximumTrackTintColor="#FF0000"
+                            minimumTrackTintColor="blue"
+                            maximumTrackTintColor="#F69176"
                             thumbTintColor="#000000"
                             onSlidingStart={() => setSliderTouched(true)}
                             onValueChange={(value) => {
@@ -118,7 +122,7 @@ const AddEntry: React.FC = () => {
                         {/* <Text style={styles.sliderValue}>Emotion: {emotionValue.toFixed(1)}</Text> */}
 
                         {sliderTouched && (
-                            <View>
+                            <View style={{flexDirection: "row", justifyContent:"space-evenly", alignItems:"center"}}>
                                 <Button text="Write about this emotion" onPress={() => setEntryType('emotion')} />
                                 <Button text="Free form entry" onPress={() => setEntryType('freeform')} />
                             </View>
@@ -181,11 +185,11 @@ const AddEntry: React.FC = () => {
 
 export default AddEntry;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: any) => StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
-        backgroundColor: '#fff',
+        backgroundColor: colors.background,
     },
     header: {
         fontSize: 24,
@@ -193,18 +197,18 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     input: {
-        borderColor: '#ccc',
+        borderColor: colors.border,
         borderWidth: 1,
         borderRadius: 5,
         padding: 10,
         fontSize: 16,
-        color: 'black',
+        color: colors.text,
         margin: 20,
     },
     richTextEditor: {
         height: 200,
         borderWidth: 1,
-        borderColor: '#ccc',
+        borderColor: colors.border,
         marginBottom: 20,
     },
     sliderLabel: {

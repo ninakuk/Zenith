@@ -10,13 +10,14 @@ import { RiveAnimation } from '@/src/components/RiveAnimation';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAvatar } from '@/src/context/AvatarContext';
 import { useTheme } from '@react-navigation/native';
+import { JournalEntry } from '@/src/models/JournalEntry';
 
 export default function HomeScreen() {
 
   const colors = useTheme().colors;
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
-  const [entries, setEntries] = useState<any[]>([]);
+  const [entries, setEntries] = useState<JournalEntry[]>([]);
   const riveRef = useRef<RiveRef | null>(null);
   const { name, color, eyeType, setName, setColor, setEyeType } = useAvatar();
   //const [avatarSize, setAvatarSize] = useState(300); // Initial size of the avatar
@@ -76,7 +77,7 @@ export default function HomeScreen() {
       {/* List with Avatar in Header */}
       <View style={styles.avatarContainer}>
         {/* Limit touchable area to avatar */}
-        <Text>Name</Text>
+        <Text>{name}</Text>
 
         <RiveAnimation
           source={require('../../../../assets/animations/avatar_2.riv')}
@@ -96,7 +97,7 @@ export default function HomeScreen() {
 
 
       {/* List of Journal Entries */}
-      <View style={{ borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
+      <View style={styles.outerListContainer}>
         <View style={styles.listContainer} />
         <FlatList
           data={entries}
@@ -113,47 +114,41 @@ export default function HomeScreen() {
 
 const makeStyles = (colors: any) => StyleSheet.create({
   main: {
-    backgroundColor: 'white',
+    backgroundColor: colors.background,
     flex: 1,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginVertical: 10,
   },
   pressableAvatar: {
     width: 150, 
     height: 250, 
     justifyContent: 'center',
     alignItems: 'center',
-    //backgroundColor:"red"
   },
   avatarContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    //padding: 10,
-    backgroundColor: 'white',
+    backgroundColor: colors.background,
     width: '100%',
-    //paddingVertical:20,
   },
   avatar: {
     width: '100%', 
     height: '100%', 
     position: 'absolute', 
   },
-  button: {
-    padding: 10,
-    backgroundColor: '#007BFF',
-    color: 'white',
-    borderRadius: 5,
-  },
   listContainer: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: colors.card,
-    opacity: 0.2,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20
-  }
+    opacity: 0.3,
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+    borderTopColor: colors.border,
+    //borderTopWidth: 2,
+  },
+  outerListContainer: { 
+    borderTopLeftRadius: 50, 
+    borderTopRightRadius: 50, 
+    overflow: "hidden",
+    flex: 1,
+  },
 });
 
 

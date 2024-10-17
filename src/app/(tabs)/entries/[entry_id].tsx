@@ -5,6 +5,7 @@ import Button from '@/src/components/Button';
 import { JournalEntry } from '@/src/models/JournalEntry';
 import { fetchEntryById, deleteEntry, updateEntry } from '@/src/helpers/fileSystemCRUD';
 import Slider from '@react-native-community/slider';
+import { COLORS } from '@/src/constants/Colors';
 
 const emotions = ['sad', 'happy', 'neutral'];
 //TODO make emotions be part of entry object, not jus added here
@@ -55,7 +56,8 @@ export default function EntryDetailScreen() {
                 text: 'Delete',
                 onPress: async () => {
                     await deleteEntry(id);
-                    router.replace('/(tabs)/entries/home');
+                    //router.replace('/(tabs)/entries/home');
+                    router.replace('/(tabs)/entries/home');                                   
                 },
                 style: 'destructive',
             },
@@ -68,8 +70,13 @@ export default function EntryDetailScreen() {
 
     return (
         <ScrollView>
-            <Stack.Screen options={{ title: isEditing ? 'Edit Entry' : entry.title }} />
-            
+            <Stack.Screen options={{
+                title: isEditing ? 'Edit Entry' : entry.title,
+                headerStyle: {
+                    backgroundColor: COLORS.White,
+                },
+            }} />
+
             {/* Conditionally render the Image component */}
             {entry.image && (
                 <Image source={{ uri: entry.image }} style={styles.image} />
@@ -97,22 +104,24 @@ export default function EntryDetailScreen() {
             )}
 
 
-                <Slider
+            <Slider
                 disabled={!isEditing}
-                    style={styles.slider}
-                    minimumValue={-5}
-                    maximumValue={5}
-                    step={1}
-                    value={emotionValue}
-                    onValueChange={setEmotionValue}
-                    minimumTrackTintColor="#0000FF"
-                    maximumTrackTintColor="#FF0000"
-                    thumbTintColor="#000000"
-                />
-           
+                style={styles.slider}
+                minimumValue={-5}
+                maximumValue={5}
+                step={1}
+                value={emotionValue}
+                onValueChange={setEmotionValue}
+                minimumTrackTintColor="#0000FF"
+                maximumTrackTintColor="#FF0000"
+                thumbTintColor="#000000"
+            />
 
-            <Button onPress={isEditing ? handleSave : () => setIsEditing(true)} text={isEditing ? "Save Entry" : "Edit Entry"} />
-            <Button onPress={handleDelete} text="Delete Entry" />
+
+            <View style={{ flexDirection: "row" }}>
+                <Button onPress={isEditing ? handleSave : () => setIsEditing(true)} text={isEditing ? "Save Entry" : "Edit Entry"} />
+                <Button onPress={handleDelete} text="Delete Entry" />
+            </View>
         </ScrollView>
     );
 }
