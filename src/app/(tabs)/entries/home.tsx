@@ -42,7 +42,10 @@ export default function HomeScreen() {
     React.useCallback(() => {
       const fetchEntries = async () => {
         const loadedEntries = await loadEntries();
-        setEntries(loadedEntries);
+        //sort by createAt date in decending
+        const sortedEntries = loadedEntries.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()); // Sort by createdAt
+
+        setEntries(sortedEntries);
       };
 
       fetchEntries();
@@ -77,7 +80,6 @@ export default function HomeScreen() {
       {/* List with Avatar in Header */}
       <View style={styles.avatarContainer}>
         {/* Limit touchable area to avatar */}
-        <Text>{name}</Text>
 
         <RiveAnimation
           source={require('../../../../assets/animations/avatar_2.riv')}
@@ -93,6 +95,8 @@ export default function HomeScreen() {
         //activeOpacity={1} // Makes the touchable area respond to touches only within the avatar
         >
         </Pressable>
+        <Text style={styles.text}>{name}</Text>
+
       </View>
 
 
@@ -148,6 +152,13 @@ const makeStyles = (colors: any) => StyleSheet.create({
     borderTopRightRadius: 50, 
     overflow: "hidden",
     flex: 1,
+  },
+  text:{
+    //margin:20,
+    fontSize: 16,
+    marginTop:20,
+    marginBottom:15,
+    fontWeight: "bold"
   },
 });
 

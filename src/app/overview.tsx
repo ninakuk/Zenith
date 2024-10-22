@@ -58,13 +58,13 @@ export default function Overview() {
     const getEmotionColor = (emotion: Emotion) => {
         switch (emotion) {
             case 'Happy':
-                return 'green';
+                return '#FFD855';
             case 'Neutral':
-                return 'blue';
-            case 'Sad':
-                return 'red';
-            default:
                 return 'gray';
+            case 'Sad':
+                return '#76C7F6';
+            default:
+                return '#EBCBB0';
         }
     };
 
@@ -161,6 +161,7 @@ const makeStyles = (colors: any) => StyleSheet.create({
         fontSize: 18,
         //fontWeight: 'bold',
         marginBottom: 10,
+        color: colors.text
     },
     separator: {
         marginVertical: 20,

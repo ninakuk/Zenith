@@ -11,7 +11,6 @@ import { useTheme } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
-//TODO: make cuttons pretty
 //TODO: add info about study
 //TODO: add button to export data
 
@@ -73,15 +72,15 @@ export default function SettingsScreen() {
   const getColorForOption = (colorOption: number) => {
     switch (colorOption) {
       case 1:
-        return '#F69176'; // Example color (red)
+        return '#F69176';
       case 2:
-        return '#B4FF7B'; // Example color (green)
+        return '#B4FF7B'; 
       case 3:
-        return '#76C7F6'; // Example color (blue)
+        return '#76C7F6'; 
       case 4:
-        return '#FFD855'; // Example color (pink)
+        return '#FFD855'; 
       default:
-        return '#FFFFFF'; // Default color (white)
+        return '#EBCBB0'; 
     }
   };
 
