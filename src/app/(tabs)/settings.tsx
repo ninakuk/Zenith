@@ -8,6 +8,12 @@ import { loadAvatarSettings, updateAvatarSettings } from '@/src/helpers/fileSyst
 import { useAvatar } from '@/src/context/AvatarContext';
 import Colors from '@/src/constants/Colors';
 import { useTheme } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+
+//TODO: make cuttons pretty
+//TODO: add info about study
+//TODO: add button to export data
 
 export default function SettingsScreen() {
   const colors = useTheme().colors;
@@ -64,18 +70,36 @@ export default function SettingsScreen() {
     }
   };
 
+  const getColorForOption = (colorOption: number) => {
+    switch (colorOption) {
+      case 1:
+        return '#F69176'; // Example color (red)
+      case 2:
+        return '#B4FF7B'; // Example color (green)
+      case 3:
+        return '#76C7F6'; // Example color (blue)
+      case 4:
+        return '#FFD855'; // Example color (pink)
+      default:
+        return '#FFFFFF'; // Default color (white)
+    }
+  };
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}> Customise Your Avatar ! </Text>
+      <View style={styles.separator} />
+
 
 
       {/* Avatar Name Input */}
       <View>
+        <Text style={styles.text}>Name: </Text>
         <TextInput
-          //style={styles.input}
+          style={styles.input}
           value={name}
           onChangeText={handleNameChange}
-          placeholder="Enter avatar name"
+          placeholder="Enter the avatars name"
         />
       </View>
 
@@ -96,8 +120,9 @@ export default function SettingsScreen() {
       </View>
 
       {/* Eye Selection Buttons */}
+      <Text style={{marginVertical:10, marginLeft:10}}>Select Eye Type:</Text>
       <View style={styles.buttonContainer}>
-        <Text>Select Eye Type:</Text>
+        
         {[0, 1, 2, 3].map((eyeOption) => (
           <Pressable
             key={eyeOption}
@@ -108,31 +133,32 @@ export default function SettingsScreen() {
             ]}
           >
             <Text style={eyeType === eyeOption ? styles.selectedText : styles.buttonText}>
-              Eye {eyeOption}
+              Option {eyeOption+1}
             </Text>
           </Pressable>
         ))}
       </View>
 
       {/* Color Selection Buttons */}
+      <Text style={{marginVertical:10, marginLeft:10}}>Select Body Color:</Text>
       <View style={styles.buttonContainer}>
-        <Text>Select Body Color:</Text>
         {[1, 2, 3, 4].map((colorOption) => (
           <Pressable
             key={colorOption}
             onPress={() => handleAvatarColorPicker(colorOption)}
             style={[
-              styles.button,
-              color === colorOption && styles.selectedButton // Apply selected style if this option is chosen
+              styles.colorCircle,
+              color === colorOption && styles.selectedColorCircle,
+              { backgroundColor: getColorForOption(colorOption) },
             ]}
           >
-            <Text style={color === colorOption ? styles.selectedText : styles.buttonText}>
-              Color {colorOption}
-            </Text>
+            {/* <Text style={color === colorOption ? styles.selectedText : styles.buttonText}>
+              Color {colorOption.valueOf()}
+            </Text> */}
           </Pressable>
         ))}
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -143,6 +169,7 @@ const makeStyles = (colors: any) => StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+    marginTop: 10
   },
   avatarContainer: {
     justifyContent: 'center',
@@ -167,19 +194,60 @@ const makeStyles = (colors: any) => StyleSheet.create({
     marginVertical: 10,
   },
   button: {
-    padding: 10,
-    backgroundColor: '#007BFF',
-    color: 'white',
-    borderRadius: 5,
+    backgroundColor: colors.card,
+    padding: 14,
+    alignItems: 'center',
+    borderRadius: 100,
+    marginVertical: 5,
+    flex:1,
+    marginHorizontal: 5,
   },
   buttonText: {
-    color: '#333',
+    color: colors.text,
   },
   selectedButton: {
-    backgroundColor: '#87CEFA', // Highlight color for selected option
-    borderColor: '#1E90FF',
+    backgroundColor: colors.border,
+    borderColor: colors.text,
+    borderWidth: 2,          
   },
   selectedText: {
-    color: '#fff',
+    color: colors.text,
   },
+  input: {
+    borderColor: colors.border,
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 10,
+    fontSize: 16,
+    color: colors.text,
+    margin: 10,
+    //width: '70%'
+},
+text:{
+  marginLeft:10,
+  fontSize: 16,
+  marginTop:10,
+  fontWeight: "bold"
+},
+separator: {
+  marginVertical: 20,
+  height: 1,
+  width: '100%',
+  backgroundColor: colors.border
+},
+
+colorCircle: {
+  width: 40,               
+  height: 40,              
+  borderRadius: 20,        
+  borderWidth: 2,          
+  borderColor: '#FFFFFF',  
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginHorizontal: 10,
+},
+selectedColorCircle: {
+  borderColor: colors.text,  
+  borderWidth: 3,          
+},
 });

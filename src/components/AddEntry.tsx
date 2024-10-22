@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, ScrollView, TextInput, TouchableWithoutFeedback
 import { createEntry } from '../helpers/fileSystemCRUD';
 import Button from './Button';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { Basic } from './RichTextEditor';
 import Sentiment from 'sentiment';
 import Slider from '@react-native-community/slider';
 import { Emotion } from '../models/JournalEntry';
@@ -11,10 +10,20 @@ import { analyzeSentiment } from '../helpers/sentiment';
 import { getRandomPrompt } from '../models/Prompts';
 import { COLORS } from '../constants/Colors';
 import { useTheme } from '@react-navigation/native';
+import { Fit, RiveRef } from 'rive-react-native';
+import { RiveAnimation } from './RiveAnimation';
 
 
-//TODO when calculating valence, compare it to the emotion as ground truth
-//TODO Content doesnt show when exiting writing mode
+//TODO when calculating valence, compare it to the emotion as ground truth - what does this prove? im not testing for the model accuracy. MAYBE for the greeting prompt?
+
+const emotionalStates = [
+    { label: '😢', value: -5 }, 
+    { label: '😞', value: -3 }, 
+    { label: '😐', value: 0 },  
+    { label: '😊', value: 3 },  
+    { label: '😁', value: 5 },
+];
+
 const AddEntry: React.FC = () => {
     //const editorRef = useRef<RichEditor>(null);
     const [title, setTitle] = useState('');
@@ -31,6 +40,8 @@ const AddEntry: React.FC = () => {
     const colors = useTheme().colors;
     const styles = useMemo(() => makeStyles(colors), [colors]);
 
+    const riveRef = useRef<RiveRef | null>(null);
+
     useFocusEffect(
         useCallback(() => {
             setTitle('');
@@ -39,7 +50,7 @@ const AddEntry: React.FC = () => {
             setSliderTouched(false);
             setEntryType(null);
             setIsTyping(false);
-            selectedPromptRef.current = " ";
+            selectedPromptRef.current = "";
         }, [])
     )
 
@@ -90,9 +101,9 @@ const AddEntry: React.FC = () => {
             clearTimeout(blurTimeout); // Clear timeout if a new input gets focused quickly
         }
 
-        if (!selectedPromptRef.current && entryType === 'emotion') {
-            selectedPromptRef.current = getRandomPrompt(emotionValue);
-        }
+        // if (!selectedPromptRef.current && entryType === 'emotion') {
+        //     selectedPromptRef.current = getRandomPrompt(emotionValue);
+        // }
 
         setIsTyping(true);
     };
@@ -104,69 +115,77 @@ const AddEntry: React.FC = () => {
                 {!isTyping && (
                     <View>
                         {/* Slider for emotion input */}
-                        <Text style={styles.sliderLabel}>How are you feeling/ How would you rate your day? (negative - positive)</Text>
+                        <Text style={styles.sliderLabel}>How are you feeling today ?</Text>
+
                         <Slider
                             style={styles.slider}
                             minimumValue={-5}
                             maximumValue={5}
                             step={1}
                             value={emotionValue}
-                            minimumTrackTintColor="blue"
-                            maximumTrackTintColor="#F69176"
+                            minimumTrackTintColor={colors.text}
+                            maximumTrackTintColor={colors.primary}
                             thumbTintColor="#000000"
                             onSlidingStart={() => setSliderTouched(true)}
                             onValueChange={(value) => {
                                 setEmotionValue(value);
                                 selectedPromptRef.current = "";
                             }} />
-                        {/* <Text style={styles.sliderValue}>Emotion: {emotionValue.toFixed(1)}</Text> */}
 
+                        {/* Emotion labels */}
+                        <View style={styles.labelContainer}>
+                            {emotionalStates.map((state) => (
+                                <Text key={state.value} style={styles.emotionLabel}>
+                                    {state.label}
+                                </Text>
+                            ))}
+                        </View>
+                        
                         {sliderTouched && (
-                            <View style={{flexDirection: "row", justifyContent:"space-evenly", alignItems:"center"}}>
-                                <Button text="Write about this emotion" onPress={() => setEntryType('emotion')} />
-                                <Button text="Free form entry" onPress={() => setEntryType('freeform')} />
+                            <View style={styles.promptSelection}>
+                                <Button text="Write about this emotion" onPress={() => {
+                                    setEntryType('emotion');
+                                    //setIsTyping(true);
+                                    selectedPromptRef.current = getRandomPrompt(emotionValue); // Set the prompt immediately
+                                    setContent(''); // Clear content if needed
+                                }} />
+                                <Button text="Freeform" onPress={() => setEntryType('freeform')} />
                             </View>
                         )}
                     </View>)}
 
                 {entryType && (
-                    <View style={{ flex: 1 }}>
-                        {entryType === 'emotion' && (
-                            <Text style={styles.sliderValue}>{selectedPromptRef.current}</Text>
-                        )}
-                        {entryType === 'freeform' && (
-                            <Text style={styles.sliderValue}>
-                                *positive psychology prompt (gratitude)*
-                            </Text>
-                        )}
+                    <View style={{ flex: 1, }}>
+                        {/* Avatar and Prompt */}
+                        <View style={styles.avatarAndPromptContainer}>
+                            <RiveAnimation
+                                source={require('../../assets/animations/avatar_2.riv')}
+                                artboardName="Artboard"
+                                stateMachineName="State Machine 1"
+                                style={styles.avatar}
+                                ref={riveRef}
+                                fit={Fit.FitHeight}
+                            />
+                            {entryType === 'emotion' && (
+                                <Text style={styles.promptText}>{selectedPromptRef.current}</Text>
+                            )}
+                            {entryType === 'freeform' && (
+                                <Text style={styles.promptText}>*positive psychology prompt (gratitude)*</Text>
+                            )}
+                        </View>
 
+                        {/* Input Fields */}
                         <TextInput
-                            style={[
-                                styles.input,
-                                {
-                                    flex: isTyping ? 1 : undefined,
-                                    height: isTyping ? '100%' : Math.max(40, content.length * 1),
-                                },
-                            ]}
+                            style={styles.input}
                             placeholder="Title"
                             value={title}
                             onChangeText={setTitle}
                             onFocus={handleFocus}
                             onBlur={handleBlur}
                         />
-
                         <TextInput
-                            style={[
-                                styles.input,
-                                {
-                                    flex: isTyping ? 1 : undefined,
-                                    height: isTyping ? '100%' : Math.max(100, content.length * 1),
-                                    paddingBottom: 20
-                                },
-                                { paddingBottom: 120 }
-
-                            ]}
-                            placeholder="Content"
+                            style={[styles.input, { height: 150 }]}
+                            placeholder=""
                             value={content}
                             onChangeText={setContent}
                             multiline={true}
@@ -191,6 +210,15 @@ const makeStyles = (colors: any) => StyleSheet.create({
         padding: 20,
         backgroundColor: colors.background,
     },
+    avatarAndPromptContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        //marginBottom: 10,
+    },
+    promptText: {
+        fontSize: 16,
+        flexShrink: 1,
+    },
     header: {
         fontSize: 24,
         fontWeight: 'bold',
@@ -203,13 +231,7 @@ const makeStyles = (colors: any) => StyleSheet.create({
         padding: 10,
         fontSize: 16,
         color: colors.text,
-        margin: 20,
-    },
-    richTextEditor: {
-        height: 200,
-        borderWidth: 1,
-        borderColor: colors.border,
-        marginBottom: 20,
+        margin: 10,
     },
     sliderLabel: {
         fontSize: 16,
@@ -224,5 +246,25 @@ const makeStyles = (colors: any) => StyleSheet.create({
         fontSize: 16,
         textAlign: 'center',
         marginBottom: 20,
+    },
+    avatar: {
+        width: 150,
+        height: 150,
+        marginRight: 10,
+    },
+    promptSelection: {
+        flexDirection: "row",
+        justifyContent: "space-evenly",
+        alignItems: "center",
+    },
+    labelContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 5,
+    },
+    emotionLabel: {
+        fontSize: 24,
+        textAlign: 'center',
+        width: '20%',
     },
 });
