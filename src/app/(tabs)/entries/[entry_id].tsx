@@ -7,14 +7,15 @@ import { fetchEntryById, deleteEntry, updateEntry } from '@/src/helpers/fileSyst
 import Slider from '@react-native-community/slider';
 import { COLORS } from '@/src/constants/Colors';
 import { useTheme } from '@react-navigation/native';
+import { analyzeSentiment } from '@/src/helpers/sentiment';
 
 //TODO date of this update will be saved as well, showing both in the entry
 
 const emotionalStates = [
-    { label: '😢', value: -5 }, 
-    { label: '😞', value: -3 }, 
-    { label: '😐', value: 0 },  
-    { label: '😊', value: 3 },  
+    { label: '😢', value: -5 },
+    { label: '😞', value: -3 },
+    { label: '😐', value: 0 },
+    { label: '😊', value: 3 },
     { label: '😁', value: 5 },
 ];
 
@@ -22,7 +23,7 @@ export default function EntryDetailScreen() {
     const { entry_id } = useLocalSearchParams();
     const router = useRouter();
     const colors = useTheme().colors;
-  const styles = useMemo(() => makeStyles(colors), [colors]);
+    const styles = useMemo(() => makeStyles(colors), [colors]);
 
 
     const id = typeof entry_id === 'string' ? entry_id : '';
@@ -51,8 +52,36 @@ export default function EntryDetailScreen() {
 
     const handleSave = async () => {
         if (entry) {
-            await updateEntry(id, { title, content: entryText });
-            setIsEditing(false);
+            const sentimentResult = analyzeSentiment(entryText);
+            const sentimentScore = sentimentResult.score;
+            const sentimentWord = sentimentResult.emotion;
+            const sentimentHappyW = sentimentResult.happyW;
+            const sentimentSadW = sentimentResult.sadW;
+            const sentimentAllW = sentimentResult.allW;
+
+            // Get emotion value and map it to the Emotion word
+            const emotionSliderScore = emotionValue;
+            const emotionSliderWord = emotionSliderScore > 0
+                ? 'Happy'
+                : emotionSliderScore < 0
+                    ? 'Sad'
+                    : 'Neutral';
+
+
+            await updateEntry(id, {
+                title: title,
+                content: entryText,
+                sentimentScore,
+                sentimentWord,
+                emotionSliderScore,
+                emotionSliderWord,
+                sentimentHappyW,
+                sentimentSadW,
+                sentimentAllW 
+            });
+            setIsEditing(false); // Exit editing mode
+        } else {
+            alert('No entry to save.');
         }
     };
 
@@ -64,7 +93,7 @@ export default function EntryDetailScreen() {
                 onPress: async () => {
                     await deleteEntry(id);
                     //router.replace('/(tabs)/entries/home');
-                    router.replace('/(tabs)/entries/home');                                   
+                    router.replace('/(tabs)/entries/home');
                 },
                 style: 'destructive',
             },
@@ -102,7 +131,7 @@ export default function EntryDetailScreen() {
                     multiline
                 />
             ) : (
-                <Text style={[{ color: colors.text, marginHorizontal: 20,height: 150, marginVertical: 30,}, styles.content]}>{entryText}</Text>
+                <Text style={[{ color: colors.text, marginHorizontal: 20, height: 150, marginVertical: 30, }, styles.content]}>{entryText}</Text>
             )}
 
 
@@ -114,22 +143,22 @@ export default function EntryDetailScreen() {
                 step={1}
                 value={emotionValue}
                 onValueChange={setEmotionValue}
-                minimumTrackTintColor={colors.text}
-                maximumTrackTintColor={colors.primary}
+                minimumTrackTintColor='#76C7F6'
+                maximumTrackTintColor='#FFD855'
                 thumbTintColor="#000000"
             />
 
             {/* Emotion labels */}
             <View style={styles.labelContainer}>
-                            {emotionalStates.map((state) => (
-                                <Text key={state.value} style={styles.emotionLabel}>
-                                    {state.label}
-                                </Text>
-                            ))}
-                        </View>
+                {emotionalStates.map((state) => (
+                    <Text key={state.value} style={styles.emotionLabel}>
+                        {state.label}
+                    </Text>
+                ))}
+            </View>
 
 
-            <View style={{ flexDirection: "row", marginVertical:20 }}>
+            <View style={{ flexDirection: "row", marginVertical: 20 }}>
                 <Button onPress={isEditing ? handleSave : () => setIsEditing(true)} text={isEditing ? "Save Entry" : "Edit Entry"} />
                 <Button onPress={handleDelete} text="Delete Entry" />
             </View>
@@ -156,6 +185,7 @@ const makeStyles = (colors: any) => StyleSheet.create({
         fontSize: 16,
         color: colors.text,
         margin: 10,
+        textAlignVertical: 'top'
     },
     emotions: {
         flexDirection: 'row',

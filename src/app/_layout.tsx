@@ -70,7 +70,5 @@ function RootLayoutNav() {
       </GestureHandlerRootView>
     </AvatarProvider>
 
-
-
   );
 }

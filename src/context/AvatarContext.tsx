@@ -11,7 +11,7 @@ type AvatarContextType = {
 };
 
 // Create Context
-const AvatarContext = createContext<AvatarContextType | undefined>(undefined);
+export const AvatarContext = createContext<AvatarContextType | undefined>(undefined);
 
 // Create a custom hook to use the AvatarContext
 export const useAvatar = () => {

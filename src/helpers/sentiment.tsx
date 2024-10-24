@@ -18,9 +18,9 @@ export const analyzeSentiment = (text: string) => {
 
     const happyW = result.positive
     const sadW = result.negative
-    const words = result.words
+    const allW = result.words
 
-    console.log("happy: ", happyW," sad: ", sadW, " word? : ",words)
+    console.log("happy: ", happyW," sad: ", sadW, " word? : ",allW, "result: ", result)
 
-    return { score, emotion };
+    return { score, emotion, happyW, sadW, allW };
 };

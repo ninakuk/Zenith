@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { createEntry } from '../helpers/fileSystemCRUD';
 import Button from './Button';
@@ -12,9 +12,13 @@ import { COLORS } from '../constants/Colors';
 import { useTheme } from '@react-navigation/native';
 import { Fit, RiveRef } from 'rive-react-native';
 import { RiveAnimation } from './RiveAnimation';
+import { AvatarContext, useAvatar } from '../context/AvatarContext';
+
+////TODO title is useless? maybe remove - not now
+////TODO when calculating valence, compare it to the emotion as ground truth - what does this prove? im not testing for the model accuracy. MAYBE for the greeting prompt?
 
 
-//TODO when calculating valence, compare it to the emotion as ground truth - what does this prove? im not testing for the model accuracy. MAYBE for the greeting prompt?
+//TODO avatar is not taken from context apparently!!!!!!
 
 const emotionalStates = [
     { label: '😢', value: -5 }, 
@@ -31,8 +35,11 @@ const AddEntry: React.FC = () => {
     const [emotionValue, setEmotionValue] = useState(0);
     const [sliderTouched, setSliderTouched] = useState(false);
     const [entryType, setEntryType] = useState<'emotion' | 'freeform' | null>(null);
+    const isEmotionEntry = (entryType === 'emotion');
+
     const [isTyping, setIsTyping] = useState(false); // New state to track if the user is typing
     const selectedPromptRef = useRef<string>("null");
+    const { color, eyeType } = useAvatar();
 
     const router = useRouter();
     let blurTimeout: NodeJS.Timeout; // Variable to store the timeout ID
@@ -60,12 +67,31 @@ const AddEntry: React.FC = () => {
         }
     }, [emotionValue, entryType]);
 
+    useEffect(() => {
+        //load the avatar settings when the component mounts
+        const fetchAvatarSettings = async () => {
+          try {
+            if (riveRef.current) {
+              if (color !== null) riveRef.current.setInputState('State Machine 1', 'BodyColor', color);
+              if (eyeType !== null) riveRef.current.setInputState('State Machine 1', 'EyeType', eyeType);
+            }
+          } catch (error) {
+            console.error('Error loading avatar settings:', error);
+          }
+        };
+    
+        fetchAvatarSettings();
+      }, [color, eyeType]);
+
     const handleCreateEntry = async () => {
         if (title && content) {
             //analyze sentiment and get the score and word
             const sentimentResult = analyzeSentiment(content);
             const sentimentScore = sentimentResult.score;
             const sentimentWord = sentimentResult.emotion;
+            const sentimentHappyW = sentimentResult.happyW;
+            const sentimentSadW = sentimentResult.sadW;
+            const sentimentAllW = sentimentResult.allW;
 
             //get emotion value and map it to the Emotion value same as sentiment
             const emotionSliderScore = emotionValue
@@ -73,7 +99,20 @@ const AddEntry: React.FC = () => {
 
             const createdAt = new Date(); // Format: YYYY-MM-DDTHH:mm:ss.sssZ
 
-            await createEntry(title, content, sentimentScore, sentimentWord, emotionSliderScore, emotionSliderWord, selectedPromptRef.current, createdAt);
+            await createEntry(
+                title, 
+                content, 
+                sentimentScore, 
+                sentimentWord, 
+                emotionSliderScore, 
+                emotionSliderWord, 
+                selectedPromptRef.current, 
+                createdAt, 
+                sentimentHappyW, 
+                sentimentSadW, 
+                sentimentAllW,
+                isEmotionEntry
+            );
 
             //clear input fields and navigate back
             setTitle('');
@@ -123,8 +162,8 @@ const AddEntry: React.FC = () => {
                             maximumValue={5}
                             step={1}
                             value={emotionValue}
-                            minimumTrackTintColor={colors.text}
-                            maximumTrackTintColor={colors.primary}
+                            minimumTrackTintColor='#76C7F6'
+                            maximumTrackTintColor='#FFD855'
                             thumbTintColor="#000000"
                             onSlidingStart={() => setSliderTouched(true)}
                             onValueChange={(value) => {
@@ -140,7 +179,8 @@ const AddEntry: React.FC = () => {
                                 </Text>
                             ))}
                         </View>
-                        
+                        <Text>Avatar color: {color}</Text>
+
                         {sliderTouched && (
                             <View style={styles.promptSelection}>
                                 <Button text="Write about this emotion" onPress={() => {
@@ -232,6 +272,7 @@ const makeStyles = (colors: any) => StyleSheet.create({
         fontSize: 16,
         color: colors.text,
         margin: 10,
+        textAlignVertical: 'top'
     },
     sliderLabel: {
         fontSize: 16,
@@ -239,7 +280,7 @@ const makeStyles = (colors: any) => StyleSheet.create({
     },
     slider: {
         width: '100%',
-        height: 40,
+        height: 50,
         marginBottom: 10,
     },
     sliderValue: {
