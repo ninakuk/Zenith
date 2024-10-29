@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TextInput, TouchableWithoutFeedback, Keyboard, Modal } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TextInput, TouchableWithoutFeedback, Keyboard, Modal, Alert } from 'react-native';
 import { createEntry } from '../helpers/fileSystemCRUD';
 import Button from './Button';
 import { useFocusEffect, useRouter } from 'expo-router';
@@ -216,8 +216,12 @@ const AddEntry: React.FC = () => {
                         visible={isModalVisible}
                         //onRequestClose={closeModal}
                         animationType="slide"
+                        onRequestClose={() => {
+                            Alert.alert('Modal has been closed.');
+                            setModalVisible(!isModalVisible);
+                        }}
                     >
-                        <View style={{ flex: 1, }}>
+                        <View>
                             {/* Avatar and Prompt */}
                             <View style={styles.avatarAndPromptContainerModal}>
                                 <RiveAnimation
@@ -255,7 +259,13 @@ const AddEntry: React.FC = () => {
                                 onBlur={handleBlur}
                             />
 
-                            {!isTyping && <Button text="Save" onPress={handleCreateEntry} />}
+                            <View style={{ flexDirection: "row" }}>
+                                <Button text="Save" onPress={() => {handleCreateEntry; setModalVisible(false)}} />
+                                <Button text="Cancel" onPress={() => {
+                                    setModalVisible(false);
+                                }} />
+                            </View>
+
                         </View>
                     </Modal>
                 )}
@@ -322,7 +332,7 @@ const makeStyles = (colors: any) => StyleSheet.create({
     avatar: {
         width: 200,
         height: 200,
-        marginRight: 10,
+        marginRight: 0,
     },
     promptSelection: {
         flexDirection: "column",
