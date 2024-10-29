@@ -11,6 +11,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 //TODO: add info about study
 //TODO new changes
+//TODO new changes from main
 const ids = [
   "12345",
   "58740",
