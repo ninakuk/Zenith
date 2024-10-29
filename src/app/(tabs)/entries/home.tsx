@@ -11,11 +11,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAvatar } from '@/src/context/AvatarContext';
 import { useTheme } from '@react-navigation/native';
 import { JournalEntry } from '@/src/models/JournalEntry';
+import ModalScreen from '../../modal';
 
 export default function HomeScreen() {
 
   const colors = useTheme().colors;
   const styles = useMemo(() => makeStyles(colors), [colors]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
 
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const riveRef = useRef<RiveRef | null>(null);
@@ -69,6 +72,11 @@ export default function HomeScreen() {
     }
   };
 
+  const toggleModal = () => {
+    setIsModalVisible(!isModalVisible);
+  };
+
+
   // const onScroll = (event: any) => {
   //   const scrollY = event.nativeEvent.contentOffset.y;
   //   const newSize = Math.max(100, 300 - scrollY / 2); // Shrink avatar size with scroll
@@ -99,6 +107,12 @@ export default function HomeScreen() {
 
       </View>
 
+      <Pressable onPress={toggleModal}>modal</Pressable>
+
+      <ModalScreen
+        onClose={toggleModal}
+        isModalVisible={isModalVisible}
+      />
 
       {/* List of Journal Entries */}
       <View style={styles.outerListContainer}>
@@ -122,8 +136,8 @@ const makeStyles = (colors: any) => StyleSheet.create({
     flex: 1,
   },
   pressableAvatar: {
-    width: 150, 
-    height: 250, 
+    width: 150,
+    height: 250,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -134,9 +148,9 @@ const makeStyles = (colors: any) => StyleSheet.create({
     width: '100%',
   },
   avatar: {
-    width: '100%', 
-    height: '100%', 
-    position: 'absolute', 
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
   },
   listContainer: {
     ...StyleSheet.absoluteFillObject,
@@ -147,17 +161,17 @@ const makeStyles = (colors: any) => StyleSheet.create({
     borderTopColor: colors.border,
     //borderTopWidth: 2,
   },
-  outerListContainer: { 
-    borderTopLeftRadius: 50, 
-    borderTopRightRadius: 50, 
+  outerListContainer: {
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
     overflow: "hidden",
     flex: 1,
   },
-  text:{
+  text: {
     //margin:20,
     fontSize: 16,
-    marginTop:20,
-    marginBottom:15,
+    marginTop: 20,
+    marginBottom: 15,
     fontWeight: "bold"
   },
 });

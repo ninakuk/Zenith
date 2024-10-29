@@ -1,18 +1,15 @@
-import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { createEntry } from '../helpers/fileSystemCRUD';
 import Button from './Button';
 import { useFocusEffect, useRouter } from 'expo-router';
-import Sentiment from 'sentiment';
 import Slider from '@react-native-community/slider';
-import { Emotion } from '../models/JournalEntry';
 import { analyzeSentiment } from '../helpers/sentiment';
 import { getRandomPrompt } from '../models/Prompts';
-import { COLORS } from '../constants/Colors';
 import { useTheme } from '@react-navigation/native';
 import { Fit, RiveRef } from 'rive-react-native';
 import { RiveAnimation } from './RiveAnimation';
-import { AvatarContext, useAvatar } from '../context/AvatarContext';
+import { useAvatar } from '../context/AvatarContext';
 
 ////TODO title is useless? maybe remove - not now
 ////TODO when calculating valence, compare it to the emotion as ground truth - what does this prove? im not testing for the model accuracy. MAYBE for the greeting prompt?
@@ -37,12 +34,12 @@ const AddEntry: React.FC = () => {
     const [entryType, setEntryType] = useState<'emotion' | 'freeform' | null>(null);
     const isEmotionEntry = (entryType === 'emotion');
 
-    const [isTyping, setIsTyping] = useState(false); // New state to track if the user is typing
+    const [isTyping, setIsTyping] = useState(false);
     const selectedPromptRef = useRef<string>("null");
     const { color, eyeType } = useAvatar();
 
     const router = useRouter();
-    let blurTimeout: NodeJS.Timeout; // Variable to store the timeout ID
+    let blurTimeout: NodeJS.Timeout; 
 
     const colors = useTheme().colors;
     const styles = useMemo(() => makeStyles(colors), [colors]);
@@ -209,8 +206,8 @@ const AddEntry: React.FC = () => {
                             {entryType === 'emotion' && (
                                 <Text style={styles.promptText}>{selectedPromptRef.current}</Text>
                             )}
-                            {entryType === 'freeform' && (
-                                <Text style={styles.promptText}>*positive psychology prompt (gratitude)*</Text>
+                            {entryType === 'freeform' && isTyping && (
+                                <Text style={styles.promptText}>Need Inspiration?</Text>
                             )}
                         </View>
 
