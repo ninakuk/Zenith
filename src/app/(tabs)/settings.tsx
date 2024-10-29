@@ -243,6 +243,8 @@ export default function SettingsScreen() {
         {/* Data sending */}
         <View style={styles.separator} />
 
+        <Text style={{ marginVertical: 10, marginLeft: 10 }}>All your journal entries and personal information stay completely private and <Text style={{fontWeight:'bold'}}>NEVER</Text> leave your device.</Text>
+        
         <TextInput
           style={styles.input}
           placeholder="Enter your User ID"
@@ -251,11 +253,11 @@ export default function SettingsScreen() {
           keyboardType='numeric'
         />
         <Pressable style={styles.button} onPress={handleSendData} disabled={!isValidId || loading}>
-        {loading ? (
-          <ActivityIndicator size="small" color={colors.text} />
-        ) : (
-          <Text style={styles.buttonText}>Send Data</Text>
-        )}        
+          {loading ? (
+            <ActivityIndicator size="small" color={colors.text} />
+          ) : (
+            <Text style={styles.buttonText}>Send Data</Text>
+          )}
         </Pressable>
 
       </ScrollView>

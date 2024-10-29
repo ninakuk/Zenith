@@ -12,7 +12,7 @@ const stringIsUrl = (uri: string) => {
   return uri.startsWith('http') || uri.startsWith('file');
 }
 
-export const RiveAnimation = forwardRef<RiveRef, RiveComponentProps>(
+export const RiveAnimation = React.forwardRef<RiveRef, RiveComponentProps>(
   (props, ref) => {
 
     const { source, ...riveProps } = props;

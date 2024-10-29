@@ -27,8 +27,11 @@ export default function HomeScreen() {
     const fetchAvatarSettings = async () => {
       try {
         if (riveRef.current) {
+          console.log('riveref:', riveRef.current)
           if (color !== null) riveRef.current.setInputState('State Machine 1', 'BodyColor', color);
           if (eyeType !== null) riveRef.current.setInputState('State Machine 1', 'EyeType', eyeType);
+        }else{
+          console.log('rive ref not ready')
         }
       } catch (error) {
         console.error('Error loading avatar settings:', error);
@@ -52,28 +55,15 @@ export default function HomeScreen() {
     }, [])
   );
 
-  const handleDeleteEntry = async (id: string) => {
-    await deleteEntry(id);
-    const updatedEntries = await loadEntries(); // Re-fetch entries after deletion
-    setEntries(updatedEntries);
-  };
-
   const handleAvatarTouch = () => {
     try {
       if (riveRef.current) {
-        // Trigger the animation by its name or state
         riveRef.current?.setInputState('State Machine 1', 'StartTouch', true);
       }
     } catch (error) {
       console.error("Error triggering touch animation:", error);
     }
   };
-
-  // const onScroll = (event: any) => {
-  //   const scrollY = event.nativeEvent.contentOffset.y;
-  //   const newSize = Math.max(100, 300 - scrollY / 2); // Shrink avatar size with scroll
-  //   setAvatarSize(newSize);
-  // };
 
   return (
     <SafeAreaView style={styles.main}>
