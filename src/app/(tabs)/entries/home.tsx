@@ -100,19 +100,11 @@ export default function HomeScreen() {
         <Pressable
           onPress={handleAvatarTouch}
           style={styles.pressableAvatar}
-        //activeOpacity={1} // Makes the touchable area respond to touches only within the avatar
         >
         </Pressable>
         <Text style={styles.text}>{name}</Text>
 
       </View>
-
-      <Pressable onPress={toggleModal}>modal</Pressable>
-
-      <ModalScreen
-        onClose={toggleModal}
-        isModalVisible={isModalVisible}
-      />
 
       {/* List of Journal Entries */}
       <View style={styles.outerListContainer}>

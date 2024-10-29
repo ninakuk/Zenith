@@ -201,7 +201,7 @@ export default function SettingsScreen() {
           <Pressable
             onPress={handleAvatarTouch}
             style={styles.pressableAvatar}
-          ></Pressable>
+          />
         </View>
 
         {/* Eye Selection Buttons */}
@@ -242,6 +242,8 @@ export default function SettingsScreen() {
 
         {/* Data sending */}
         <View style={styles.separator} />
+
+        <Text style={{ marginVertical: 10, marginLeft: 10 }}>All your journal entries and personal information stay completely private and are<Text style={{fontWeight:'bold'}}>NOT</Text> sent as data, or ever leave your device.</Text>
 
         <TextInput
           style={styles.input}

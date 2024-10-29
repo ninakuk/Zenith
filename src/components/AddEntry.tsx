@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TextInput, TouchableWithoutFeedback, Keyboard, Modal } from 'react-native';
 import { createEntry } from '../helpers/fileSystemCRUD';
 import Button from './Button';
 import { useFocusEffect, useRouter } from 'expo-router';
@@ -18,10 +18,10 @@ import { useAvatar } from '../context/AvatarContext';
 //TODO avatar is not taken from context apparently!!!!!!
 
 const emotionalStates = [
-    { label: '😢', value: -5 }, 
-    { label: '😞', value: -3 }, 
-    { label: '😐', value: 0 },  
-    { label: '😊', value: 3 },  
+    { label: '😢', value: -5 },
+    { label: '😞', value: -3 },
+    { label: '😐', value: 0 },
+    { label: '😊', value: 3 },
     { label: '😁', value: 5 },
 ];
 
@@ -33,13 +33,15 @@ const AddEntry: React.FC = () => {
     const [sliderTouched, setSliderTouched] = useState(false);
     const [entryType, setEntryType] = useState<'emotion' | 'freeform' | null>(null);
     const isEmotionEntry = (entryType === 'emotion');
+    const [isModalVisible, setModalVisible] = useState(false);
+
 
     const [isTyping, setIsTyping] = useState(false);
     const selectedPromptRef = useRef<string>("null");
     const { color, eyeType } = useAvatar();
 
     const router = useRouter();
-    let blurTimeout: NodeJS.Timeout; 
+    let blurTimeout: NodeJS.Timeout;
 
     const colors = useTheme().colors;
     const styles = useMemo(() => makeStyles(colors), [colors]);
@@ -67,18 +69,18 @@ const AddEntry: React.FC = () => {
     useEffect(() => {
         //load the avatar settings when the component mounts
         const fetchAvatarSettings = async () => {
-          try {
-            if (riveRef.current) {
-              if (color !== null) riveRef.current.setInputState('State Machine 1', 'BodyColor', color);
-              if (eyeType !== null) riveRef.current.setInputState('State Machine 1', 'EyeType', eyeType);
+            try {
+                if (riveRef.current) {
+                    if (color !== null) riveRef.current.setInputState('State Machine 1', 'BodyColor', color);
+                    if (eyeType !== null) riveRef.current.setInputState('State Machine 1', 'EyeType', eyeType);
+                }
+            } catch (error) {
+                console.error('Error loading avatar settings:', error);
             }
-          } catch (error) {
-            console.error('Error loading avatar settings:', error);
-          }
         };
-    
+
         fetchAvatarSettings();
-      }, [color, eyeType]);
+    }, [color, eyeType]);
 
     const handleCreateEntry = async () => {
         if (title && content) {
@@ -97,16 +99,16 @@ const AddEntry: React.FC = () => {
             const createdAt = new Date(); // Format: YYYY-MM-DDTHH:mm:ss.sssZ
 
             await createEntry(
-                title, 
-                content, 
-                sentimentScore, 
-                sentimentWord, 
-                emotionSliderScore, 
-                emotionSliderWord, 
-                selectedPromptRef.current, 
-                createdAt, 
-                sentimentHappyW, 
-                sentimentSadW, 
+                title,
+                content,
+                sentimentScore,
+                sentimentWord,
+                emotionSliderScore,
+                emotionSliderWord,
+                selectedPromptRef.current,
+                createdAt,
+                sentimentHappyW,
+                sentimentSadW,
                 sentimentAllW,
                 isEmotionEntry
             );
@@ -148,93 +150,117 @@ const AddEntry: React.FC = () => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
 
             <ScrollView style={[{ flexGrow: 1 }, styles.container]}>
-                {!isTyping && (
-                    <View>
-                        {/* Slider for emotion input */}
-                        <Text style={styles.sliderLabel}>How are you feeling today ?</Text>
 
-                        <Slider
-                            style={styles.slider}
-                            minimumValue={-5}
-                            maximumValue={5}
-                            step={1}
-                            value={emotionValue}
-                            minimumTrackTintColor='#76C7F6'
-                            maximumTrackTintColor='#FFD855'
-                            thumbTintColor="#000000"
-                            onSlidingStart={() => setSliderTouched(true)}
-                            onValueChange={(value) => {
-                                setEmotionValue(value);
-                                selectedPromptRef.current = "";
-                            }} />
+                <View>
+                    {/* Slider for emotion input */}
+                    <Text style={styles.sliderLabel}>How are you feeling today ?</Text>
 
-                        {/* Emotion labels */}
-                        <View style={styles.labelContainer}>
-                            {emotionalStates.map((state) => (
-                                <Text key={state.value} style={styles.emotionLabel}>
-                                    {state.label}
-                                </Text>
-                            ))}
-                        </View>
-                        <Text>Avatar color: {color}</Text>
+                    <Slider
+                        style={styles.slider}
+                        minimumValue={-5}
+                        maximumValue={5}
+                        step={1}
+                        value={emotionValue}
+                        minimumTrackTintColor='#76C7F6'
+                        maximumTrackTintColor='#FFD855'
+                        thumbTintColor="#000000"
+                        onSlidingStart={() => setSliderTouched(true)}
+                        onValueChange={(value) => {
+                            setEmotionValue(value);
+                            selectedPromptRef.current = "";
+                        }} />
 
-                        {sliderTouched && (
-                            <View style={styles.promptSelection}>
-                                <Button text="Write about this emotion" onPress={() => {
+                    <View style={styles.labelContainer}>
+                        {emotionalStates.map((state) => (
+                            <Text key={state.value} style={styles.emotionLabel}>
+                                {state.label}
+                            </Text>
+                        ))}
+                    </View>
+
+                    {/* When emotion picked: */}
+                    {sliderTouched && (
+                        <View style={styles.promptSelection}>
+
+                            <View style={styles.avatarAndPromptContainer}>
+                                <RiveAnimation
+                                    source={require('../../assets/animations/avatar_2.riv')}
+                                    artboardName="Artboard"
+                                    stateMachineName="State Machine 1"
+                                    style={styles.avatar}
+                                    ref={riveRef}
+                                    fit={Fit.FitHeight}
+                                />
+                                <Text style={styles.promptText}>Do you want to explore this feeling, or just write freely?</Text>
+                            </View>
+
+                            <View style={{ flexDirection: "row" }}>
+                                <Button text="Explore this emotion" onPress={() => {
                                     setEntryType('emotion');
+                                    setModalVisible(true);
                                     //setIsTyping(true);
                                     selectedPromptRef.current = getRandomPrompt(emotionValue); // Set the prompt immediately
                                     setContent(''); // Clear content if needed
                                 }} />
-                                <Button text="Freeform" onPress={() => setEntryType('freeform')} />
+                                <Button text="Freeform" onPress={() => {
+                                    setEntryType('freeform'); setModalVisible(true);
+                                }} />
                             </View>
-                        )}
-                    </View>)}
+                        </View>
+                    )}
+                </View>
+
 
                 {entryType && (
-                    <View style={{ flex: 1, }}>
-                        {/* Avatar and Prompt */}
-                        <View style={styles.avatarAndPromptContainer}>
-                            <RiveAnimation
-                                source={require('../../assets/animations/avatar_2.riv')}
-                                artboardName="Artboard"
-                                stateMachineName="State Machine 1"
-                                style={styles.avatar}
-                                ref={riveRef}
-                                fit={Fit.FitHeight}
+                    <Modal
+                        visible={isModalVisible}
+                        //onRequestClose={closeModal}
+                        animationType="slide"
+                    >
+                        <View style={{ flex: 1, }}>
+                            {/* Avatar and Prompt */}
+                            <View style={styles.avatarAndPromptContainerModal}>
+                                <RiveAnimation
+                                    source={require('../../assets/animations/avatar_2.riv')}
+                                    artboardName="Artboard"
+                                    stateMachineName="State Machine 1"
+                                    style={styles.avatar}
+                                    ref={riveRef}
+                                    fit={Fit.FitHeight}
+                                />
+                                {entryType === 'emotion' && (
+                                    <Text style={styles.promptText}>{selectedPromptRef.current}</Text>
+                                )}
+                                {entryType === 'freeform' && isTyping && (
+                                    <Text style={styles.promptText}>Need Inspiration?</Text>
+                                )}
+                            </View>
+
+                            {/* Input Fields */}
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Title"
+                                value={title}
+                                onChangeText={setTitle}
+                                onFocus={handleFocus}
+                                onBlur={handleBlur}
                             />
-                            {entryType === 'emotion' && (
-                                <Text style={styles.promptText}>{selectedPromptRef.current}</Text>
-                            )}
-                            {entryType === 'freeform' && isTyping && (
-                                <Text style={styles.promptText}>Need Inspiration?</Text>
-                            )}
+                            <TextInput
+                                style={[styles.input, { height: 150 }]}
+                                placeholder=""
+                                value={content}
+                                onChangeText={setContent}
+                                multiline={true}
+                                onFocus={handleFocus}
+                                onBlur={handleBlur}
+                            />
+
+                            {!isTyping && <Button text="Save" onPress={handleCreateEntry} />}
                         </View>
-
-                        {/* Input Fields */}
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Title"
-                            value={title}
-                            onChangeText={setTitle}
-                            onFocus={handleFocus}
-                            onBlur={handleBlur}
-                        />
-                        <TextInput
-                            style={[styles.input, { height: 150 }]}
-                            placeholder=""
-                            value={content}
-                            onChangeText={setContent}
-                            multiline={true}
-                            onFocus={handleFocus}
-                            onBlur={handleBlur}
-                        />
-
-                        {!isTyping && <Button text="Save" onPress={handleCreateEntry} />}
-                    </View>
+                    </Modal>
                 )}
             </ScrollView>
-        </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback >
 
     );
 };
@@ -248,13 +274,21 @@ const makeStyles = (colors: any) => StyleSheet.create({
         backgroundColor: colors.background,
     },
     avatarAndPromptContainer: {
+        flexDirection: 'column',
+        alignItems: 'center',
+        height: 300,
+        marginBottom: 10,
+    },
+    avatarAndPromptContainerModal: {
         flexDirection: 'row',
         alignItems: 'center',
-        //marginBottom: 10,
+        height: 200,
+        marginBottom: 10
     },
     promptText: {
         fontSize: 16,
         flexShrink: 1,
+        margin: 10,
     },
     header: {
         fontSize: 24,
@@ -286,12 +320,12 @@ const makeStyles = (colors: any) => StyleSheet.create({
         marginBottom: 20,
     },
     avatar: {
-        width: 150,
-        height: 150,
+        width: 200,
+        height: 200,
         marginRight: 10,
     },
     promptSelection: {
-        flexDirection: "row",
+        flexDirection: "column",
         justifyContent: "space-evenly",
         alignItems: "center",
     },
