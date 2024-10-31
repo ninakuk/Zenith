@@ -14,7 +14,6 @@ import { useAvatar } from '../context/AvatarContext';
 ////TODO title is useless? maybe remove - not now
 ////TODO when calculating valence, compare it to the emotion as ground truth - what does this prove? im not testing for the model accuracy. MAYBE for the greeting prompt?
 
-
 //TODO avatar is not taken from context apparently!!!!!!
 
 const emotionalStates = [
@@ -25,7 +24,7 @@ const emotionalStates = [
     { label: '😁', value: 5 },
 ];
 
-const AddEntry: React.FC = () => {
+const AddEntryyy: React.FC = () => {
     //const editorRef = useRef<RichEditor>(null);
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
@@ -124,7 +123,6 @@ const AddEntry: React.FC = () => {
         } else {
             alert('Please enter both a title and content.');
         }
-
 
     };
 
@@ -275,7 +273,7 @@ const AddEntry: React.FC = () => {
     );
 };
 
-export default AddEntry;
+export default AddEntryyy;
 
 const makeStyles = (colors: any) => StyleSheet.create({
     container: {

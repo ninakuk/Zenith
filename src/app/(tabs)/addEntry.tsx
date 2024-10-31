@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TextInput, TouchableWithoutFeedback, Keyboard, Modal, Alert, Pressable } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Animated, TouchableWithoutFeedback, Keyboard, Modal, Alert, Pressable } from 'react-native';
 import { createEntry } from '../../helpers/fileSystemCRUD';
 import Button from '../../components/Button';
 import { useFocusEffect, useRouter } from 'expo-router';
@@ -27,11 +27,12 @@ const emotionalStates = [
 ];
 
 const AddEntry: React.FC = () => {
-  //const editorRef = useRef<RichEditor>(null);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [emotionValue, setEmotionValue] = useState(0);
   const [sliderTouched, setSliderTouched] = useState(false);
+  const opacityAnim = useRef(new Animated.Value(1)).current;
+
   const [entryType, setEntryType] = useState<'emotion' | 'freeform' | null>(null);
   const isEmotionEntry = (entryType === 'emotion');
   const [isModalVisible, setModalVisible] = useState(false);
@@ -42,7 +43,6 @@ const AddEntry: React.FC = () => {
   const { color, eyeType } = useAvatar();
 
   const router = useRouter();
-  //let blurTimeout: NodeJS.Timeout;
 
   const colors = useTheme().colors;
   const styles = useMemo(() => makeStyles(colors), [colors]);
@@ -61,14 +61,32 @@ const AddEntry: React.FC = () => {
     }, [])
   )
 
+  //TODO check if this duplicates the prompt
   useEffect(() => {
     if (entryType === 'emotion' && !selectedPromptRef.current) {
-      selectedPromptRef.current = getRandomPrompt(emotionValue); // Set the prompt only once
+      selectedPromptRef.current = getRandomPrompt(emotionValue);
     }
   }, [emotionValue, entryType]);
 
   useEffect(() => {
-    //load the avatar settings when the component mounts
+    // Animate the opacity when sliderTouched changes
+    Animated.sequence([
+      Animated.timing(opacityAnim, {
+        toValue: 0,
+        duration: 200, // fade-out duration
+        useNativeDriver: true,
+      }),
+      Animated.timing(opacityAnim, {
+        toValue: 1,
+        duration: 200, // fade-in duration
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [sliderTouched, opacityAnim]);
+
+
+  //load the avatar settings when the component mounts
+  useEffect(() => {
     const fetchAvatarSettings = async () => {
       try {
         if (riveRef.current) {
@@ -86,7 +104,6 @@ const AddEntry: React.FC = () => {
   const handleAvatarTouch = () => {
     try {
       if (riveRef.current) {
-        // Trigger the animation by its name or state
         riveRef.current?.setInputState('State Machine 1', 'StartTouch', true);
       }
     } catch (error) {
@@ -103,7 +120,7 @@ const AddEntry: React.FC = () => {
 
       <ScrollView style={[{ flexGrow: 1 }, styles.container]}>
 
-        <View style={{flex:1}}>
+        <View style={{ flex: 1 }}>
           <View style={styles.avatarAndPromptContainer}>
             <RiveAnimation
               source={require('../../../assets/animations/avatar_2.riv')}
@@ -113,16 +130,26 @@ const AddEntry: React.FC = () => {
               ref={riveRef}
               fit={Fit.FitHeight}
             />
-            {sliderTouched ? (
-              <Text style={styles.promptText}>Do you want to explore this feeling, or just write freely?</Text>
-            ):( 
-            <Text style={styles.promptText}>How are you feeling today ?</Text>
-            )}
+            {/* <Pressable
+              onPress={handleAvatarTouch}
+              style={styles.pressableAvatar}
+            ></Pressable> */}
+
+            {/* {sliderTouched ? (
+              <Text style={styles.promptText}>Do you need inspiration, or just wish to write freely ?</Text>
+            ) : (
+              <Text style={styles.promptText}>How are you feeling today ?</Text>
+            )} */}
+
+            <Animated.Text style={[styles.promptText, { opacity: opacityAnim }]}>
+              {sliderTouched
+                ? "Do you need inspiration, or just wish to write freely?"
+                : "How are you feeling today?"}
+            </Animated.Text>
 
           </View>
 
           {/* Slider for emotion input */}
-
           <Slider
             style={styles.slider}
             minimumValue={-5}
@@ -148,13 +175,13 @@ const AddEntry: React.FC = () => {
 
           {/* When emotion picked: */}
           {sliderTouched && (
-            <View style={{ flexDirection: "row" , marginTop:20,}}>
+            <View style={{ flexDirection: "row", marginTop: 20, }}>
 
-              <Button text="Explore this emotion" onPress={() => {
+              <Button text="Help me reflect" onPress={() => {
                 setEntryType('emotion');
                 setModalVisible(true);
                 selectedPromptRef.current = getRandomPrompt(emotionValue);
-                setContent(''); 
+                setContent('');
               }} />
 
               <Button text="Freeform" onPress={() => {
@@ -169,11 +196,12 @@ const AddEntry: React.FC = () => {
 
         {entryType && (
           <EntryModal
-          isModalVisible={isModalVisible}
-          entryType={entryType}
-          isEmotionEntry={isEmotionEntry}
-          onClose={toggleModal}
-          prompt={selectedPromptRef.current}
+            isModalVisible={isModalVisible}
+            entryType={entryType}
+            isEmotionEntry={isEmotionEntry}
+            onClose={toggleModal}
+            prompt={selectedPromptRef.current}
+            emotionValue={emotionValue}
           />
 
         )}
@@ -192,9 +220,9 @@ const makeStyles = (colors: any) => StyleSheet.create({
     backgroundColor: colors.background,
   },
   modalView: {
-    flex:1,
+    flex: 1,
     margin: 20,
-    backgroundColor:colors.background,
+    backgroundColor: colors.background,
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',

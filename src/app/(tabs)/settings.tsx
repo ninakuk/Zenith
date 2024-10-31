@@ -3,15 +3,14 @@ import { Text, View } from '@/src/components/Themed';
 import { RiveAnimation } from '@/src/components/RiveAnimation';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Rive, { Fit, RiveRef } from 'rive-react-native';
-import { loadEntries, updateAvatarSettings } from '@/src/helpers/fileSystemCRUD';
+import { loadAvatarSettings, loadEntries, saveAvatarSettings, updateAvatarSettings } from '@/src/helpers/fileSystemCRUD';
 import { useAvatar } from '@/src/context/AvatarContext';
 import { useTheme } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
 
 //TODO: add info about study
-//TODO new changes
-//TODO new changes from main
+
 const ids = [
   "12345",
   "58740",
@@ -48,10 +47,12 @@ export default function SettingsScreen() {
   const [validIds, setValidIds] = useState<string[]>(ids);
   const isValidId = validIds.includes(journalId);
   const [loading, setLoading] = useState(false)
-  const GOOGLE_SHEETS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwufEhAFUzULZDsioNp416P5Xu6-wwVKKDSHQAMnPXke8H6DvqRiHAl7X-9-doW5J4eSQ/exec';
+  const GOOGLE_SHEETS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbylsXberqgbO-Xfsu5STPJznZNzTv1lMnHp0YyfOC6K2eDOtCwcA5yxxA5btuig2__W3w/exec';
 
   const riveRef = useRef<RiveRef | null>(null);
   const { name, color, eyeType, setName, setColor, setEyeType } = useAvatar();
+
+  const[isCustomising, setIsCustomising] = useState<boolean>(false);
 
   useEffect(() => {
     //load the avatar settings when the component mounts
@@ -72,6 +73,7 @@ export default function SettingsScreen() {
   const handleAvatarEyePicker = (eyeOption: number) => {
     setEyeType(eyeOption);
     updateAvatarSettings({ eyeType: eyeOption });
+    setIsCustomising(true)
     if (riveRef.current) {
       riveRef.current?.setInputState('State Machine 1', 'EyeType', eyeOption);
     }
@@ -80,6 +82,8 @@ export default function SettingsScreen() {
   const handleAvatarColorPicker = (colorOption: number) => {
     setColor(colorOption);
     updateAvatarSettings({ color: colorOption });
+    setIsCustomising(true)
+
     if (riveRef.current) {
       riveRef.current?.setInputState('State Machine 1', 'BodyColor', colorOption);
     }
@@ -88,17 +92,59 @@ export default function SettingsScreen() {
   const handleNameChange = (inputName: string) => {
     setName(inputName);
     updateAvatarSettings({ name: inputName });
+    setIsCustomising(true)
+
   };
 
-  const handleAvatarTouch = () => {
+  const handleAvatarSave = async () => {
     try {
+      // Load current settings
+      const currentSettings = await loadAvatarSettings();
+
+      if (currentSettings) {
+        //increment customization count
+        const updatedSettings = {
+          ...currentSettings,
+          customisationCount: currentSettings.customisationCount + 1
+        };
+
+        // Save the updated settings
+        await saveAvatarSettings(updatedSettings);
+        setIsCustomising(false)
+      } else {
+        console.error('No avatar settings found to save.');
+      }
+    } catch (error) {
+      console.error('Error saving avatar:', error);
+    }
+  };
+
+  const handleAvatarTouch = async () => {
+    try {
+      //trigger animation
       if (riveRef.current) {
         riveRef.current?.setInputState('State Machine 1', 'StartTouch', true);
       }
-    } catch (error) {
-      console.error("Error triggering touch animation:", error);
-    }
-  };
+
+      //load current settings
+      const currentSettings = await loadAvatarSettings();
+
+      if (currentSettings) {
+        //increment interaction count
+        const updatedSettings = {
+          ...currentSettings,
+          interactionCounter: (currentSettings.interactionCounter || 0) + 1
+        };
+
+        // Save the updated settings
+        await saveAvatarSettings(updatedSettings);
+
+      }
+     } catch (error) {
+        console.error("Error triggering touch animation or saving interaction count:", error);
+      }
+    };
+
 
   const getColorForOption = (colorOption: number) => {
     switch (colorOption) {
@@ -129,6 +175,7 @@ export default function SettingsScreen() {
       setLoading(true);
 
       const allEntries = await loadEntries();
+      const avatarSettings = await loadAvatarSettings();
 
       const bodyData = {
         userId: journalId,
@@ -145,6 +192,13 @@ export default function SettingsScreen() {
           sentimentSadW: entry.sentimentSadW,
           sentimentAllW: entry.sentimentAllW,
         })),
+        avatarSettings: {
+          name: avatarSettings.name,
+          color: avatarSettings.color,
+          eyeType: avatarSettings.eyeType,
+          customisationCount: avatarSettings.customisationCount,
+          interactionCounter: avatarSettings.interactionCounter,
+        }
       };
 
       const response = await fetch(GOOGLE_SHEETS_WEB_APP_URL, {
@@ -158,10 +212,10 @@ export default function SettingsScreen() {
       const result = await response.text(); // Get the response as text for better debugging
 
       if (response.ok) {
-        Alert.alert('Success', 'Data has been successfully sent to Google Sheets!');
+        Alert.alert('Success', 'Data has been successfully sent!');
       } else {
         console.error('Google Sheets response error:', result);
-        Alert.alert('Error', 'Failed to send data to Google Sheets. Please try again.');
+        Alert.alert('Error', 'Failed to send data. Please try again.');
       }
     } catch (error) {
       console.error('Error sending data:', error);
@@ -240,10 +294,14 @@ export default function SettingsScreen() {
           ))}
         </View>
 
+        <Pressable onPress={handleAvatarSave} style={[styles.button, !isCustomising && styles.disabledButton]} disabled={!isCustomising}>
+          <Text style={styles.buttonText}>Save Avatar</Text>
+        </Pressable>
+
         {/* Data sending */}
         <View style={styles.separator} />
 
-        <Text style={{ marginVertical: 10, marginLeft: 10 }}>All your journal entries and personal information stay completely private and are<Text style={{fontWeight:'bold'}}>NOT</Text> sent as data, or ever leave your device.</Text>
+        <Text style={{ marginVertical: 10, marginLeft: 10 }}>All your journal entries and personal information stay completely private and are <Text style={{ fontWeight: 'bold' }}>NOT</Text> sent as data, or ever leave your device.</Text>
 
         <TextInput
           style={styles.input}
@@ -252,12 +310,12 @@ export default function SettingsScreen() {
           onChangeText={setJournalId}
           keyboardType='numeric'
         />
-        <Pressable style={styles.button} onPress={handleSendData} disabled={!isValidId || loading}>
-        {loading ? (
-          <ActivityIndicator size="small" color={colors.text} />
-        ) : (
-          <Text style={styles.buttonText}>Send Data</Text>
-        )}        
+        <Pressable style={styles.button} onPress={handleSendData} disabled={loading}>
+          {loading ? (
+            <ActivityIndicator size="small" color={colors.text} />
+          ) : (
+            <Text style={styles.buttonText}>Send Data</Text>
+          )}
         </Pressable>
 
       </ScrollView>
@@ -307,6 +365,9 @@ const makeStyles = (colors: any) => StyleSheet.create({
   },
   buttonText: {
     color: colors.text,
+  },
+  disabledButton:{
+    opacity:0.5
   },
   selectedButton: {
     backgroundColor: colors.border,

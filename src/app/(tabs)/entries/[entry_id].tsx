@@ -101,7 +101,7 @@ export default function EntryDetailScreen() {
     };
 
     if (!entry) {
-        return <Text>Entry not found</Text>;
+        return <Text></Text>;
     }
 
     return (

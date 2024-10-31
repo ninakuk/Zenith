@@ -19,38 +19,38 @@ interface ModalProps {
     entryType: 'emotion' | 'freeform' | null;
     onClose: () => void;
     isEmotionEntry: boolean;
-    prompt: string | null;
+    prompt: string;
+    emotionValue: number;
 }
 
-const ModalScreen: React.FC<ModalProps> = ({ onClose, isModalVisible, entryType, isEmotionEntry, prompt }) => {
+const ModalScreen: React.FC<ModalProps> = ({ onClose, isModalVisible, entryType, isEmotionEntry, prompt, emotionValue}) => {
 
     const riveRef = useRef<RiveRef | null>(null);
     const router = useRouter();
 
     const { color, eyeType } = useAvatar();
-    const selectedPromptRef = useRef<string>("null");
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [emotionValue, setEmotionValue] = useState(0);
-    const [sliderTouched, setSliderTouched] = useState(false);
+    //const [emotionValue, setEmotionValue] = useState(0);
+    //const [sliderTouched, setSliderTouched] = useState(false);
 
 
     //const [isModalVisible, setModalVisible] = useState(false);
     const colors = useTheme().colors;
     const styles = useMemo(() => makeStyles(colors), [colors]);
 
-    useFocusEffect(
-        useCallback(() => {
-            setTitle('');
-            setContent('');
-            setEmotionValue(0);
-            setSliderTouched(false);
-            selectedPromptRef.current = "";
-        }, [])
-    )
+    // useFocusEffect(
+    //     useCallback(() => {
+    //         setTitle('');
+    //         setContent('');
+    //         //setEmotionValue(0);
+    //         //setSliderTouched(false);
+    //         selectedPromptRef.current = "";
+    //     }, [])
+    // )
 
-    const handleCreateEntry = async () => {
+    const handleCreateEntry = () => {
         if (title && content) {
             //analyze sentiment and get the score and word
             const sentimentResult = analyzeSentiment(content);
@@ -61,19 +61,20 @@ const ModalScreen: React.FC<ModalProps> = ({ onClose, isModalVisible, entryType,
             const sentimentAllW = sentimentResult.allW;
 
             //get emotion value and map it to the Emotion value same as sentiment
+            //console.log("emotion value in modal?", emotionValue)
             const emotionSliderScore = emotionValue
             const emotionSliderWord = emotionSliderScore > 0 ? 'Happy' : emotionSliderScore < 0 ? 'Sad' : 'Neutral';
 
             const createdAt = new Date(); // Format: YYYY-MM-DDTHH:mm:ss.sssZ
 
-            await createEntry(
+             createEntry(
                 title,
                 content,
                 sentimentScore,
                 sentimentWord,
                 emotionSliderScore,
                 emotionSliderWord,
-                selectedPromptRef.current,
+                prompt,
                 createdAt,
                 sentimentHappyW,
                 sentimentSadW,
@@ -85,7 +86,7 @@ const ModalScreen: React.FC<ModalProps> = ({ onClose, isModalVisible, entryType,
             setTitle('');
             setContent('');
             //setEntryType(null);
-            setSliderTouched(false);
+            //setSliderTouched(false);
             //setIsTyping(false);
 
             router.push('/(tabs)/entries/home');
@@ -140,7 +141,7 @@ const ModalScreen: React.FC<ModalProps> = ({ onClose, isModalVisible, entryType,
                     <Text style={styles.promptText}>{prompt}</Text>
                 )}
                 {entryType === 'freeform' && (
-                    <Text style={styles.promptText}>Need Inspiration?</Text>
+                    <Text style={styles.promptText}>Im here for you!</Text>
                 )}
             </View>
 
@@ -164,12 +165,10 @@ const ModalScreen: React.FC<ModalProps> = ({ onClose, isModalVisible, entryType,
             <View style={{ flexDirection: "row", justifyContent: "flex-end", alignContent: "flex-end" }}>
                 <Button text="Save" onPress={() => { 
                     handleCreateEntry(); 
-                    toggleModal();
-                    //setModalVisible(false)
+                    //toggleModal();
                      }} />
                 <Button text="Cancel" onPress={() => {
                     toggleModal();
-                    //setModalVisible(false);
                 }} />
             </View>
 

@@ -32,10 +32,8 @@ const EntryListItem = ({ entry }: EntryListItemProps) => {
     <Link href={`/entries/${entry.id}`} asChild>
       <Pressable style={styles.container}>
 
-        {/* <Image source={{ uri: entry.image}} style={styles.image}></Image> */}
         <Text style={styles.title}>{entry.title} </Text>
         <Text style={styles.dataText}>{formatDate(entry.createdAt)}</Text>
-        {/* <Text style={{fontStyle: 'italic', fontSize: 12,}}>valence: {entry.sentimentWord}</Text> */}
 
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
         <Text style={styles.entryText} numberOfLines={4} ellipsizeMode='tail'>{entry.content}</Text>

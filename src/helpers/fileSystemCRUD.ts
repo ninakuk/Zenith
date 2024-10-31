@@ -12,9 +12,11 @@ const defaultAvatarSettings: AvatarSettings = {
     name: 'Avatar',
     color: 1,
     eyeType: 0,
+    customisationCount:0,
+    interactionCounter:0,
 };
 
-export const loadAvatarSettings = async (): Promise<AvatarSettings | null> => {
+export const loadAvatarSettings = async (): Promise<AvatarSettings> => {
     try {
         const fileInfo = await FileSystem.getInfoAsync(AVATAR_SETTINGS_FILE_PATH);
 
@@ -87,7 +89,7 @@ export const loadEntries = async (): Promise<JournalEntry[]> => {
 export const fetchEntryById = async (id: string): Promise<JournalEntry | null> => {
     const entries = await loadEntries();
     const entry = entries.find(e => e.id === id);
-    console.log("entry: ", entry)
+    //console.log("entry: ", entry)
     return entry || null;
 };
 
@@ -108,7 +110,7 @@ export const createEntry = async (
 
 ): Promise<void> => {
     const newEntry: JournalEntry = {
-        id: Date.now().toString(), //generate an ID
+        id: Date.now().toString(),
         title: title,
         content: content,
         sentimentScore: sentimentScore,
@@ -125,6 +127,8 @@ export const createEntry = async (
 
     const entries = await loadEntries();
     entries.push(newEntry);
+    //console.log("new entry:", newEntry)
+
 
     await FileSystem.writeAsStringAsync(ENTRIES_FILE_PATH, JSON.stringify(entries));
 };

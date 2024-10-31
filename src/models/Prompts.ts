@@ -77,14 +77,21 @@ const prompts: { [key: number]: string[] } = {
         "You’ve had an incredible day! What’s one moment that filled your heart with joy?",
         "Today sounds like it was perfect! What’s something that made it one of your best days ever?"
     ],
+    '10': [
+        "Hi! I’m really happy to see you 😊",
+        "Hello there! So glad you stopped by 💫",
+        "Hey! Ready to make today a little brighter together? 🌞",
+        "Hi! I’m here and excited to hear about your day 🌈",
+        "Hello! Just a little reminder — you’re awesome! 💖"
+    ]
 };
 
 
 export const getRandomPrompt = (emotionValue: number) => {
     const promptsForEmotion = prompts[emotionValue] || [];
     if (promptsForEmotion.length > 0) {
-      const randomIndex = Math.floor(Math.random() * promptsForEmotion.length);
-      return promptsForEmotion[randomIndex];
+        const randomIndex = Math.floor(Math.random() * promptsForEmotion.length);
+        return promptsForEmotion[randomIndex];
     }
     return "You're doing great!";
-  };
+};

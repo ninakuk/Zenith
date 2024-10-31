@@ -73,7 +73,7 @@ export default function Overview() {
 const onDayPress = (day: { dateString: string }) => {
     
     setSelectedDate(day.dateString);
-    console.log("date in selected date: ",selectedDate)
+    //console.log("date in selected date: ",selectedDate)
     
     //entries for that date
     const entriesForSelectedDate = entries.filter(entry => {
