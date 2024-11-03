@@ -248,10 +248,10 @@ const makeStyles = (colors: any) => StyleSheet.create({
     marginBottom: 10
   },
   promptText: {
-    fontSize: 16,
+    fontSize: 18,
     flexShrink: 1,
     margin: 10,
-    width: '50%'
+    width: '60%'
   },
   header: {
     fontSize: 24,

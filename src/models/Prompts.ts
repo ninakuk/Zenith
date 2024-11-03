@@ -78,11 +78,10 @@ const prompts: { [key: number]: string[] } = {
         "Today sounds like it was perfect! What’s something that made it one of your best days ever?"
     ],
     '10': [
-        "Hi! I’m really happy to see you 😊",
-        "Hello there! So glad you stopped by 💫",
+        "Hi! I’m happy to see you 😊",
+        "Hey! So glad you stopped by 💫",
         "Hey! Ready to make today a little brighter together? 🌞",
-        "Hi! I’m here and excited to hear about your day 🌈",
-        "Hello! Just a little reminder — you’re awesome! 💖"
+        "Hi! I’m excited to hear about your day 🌈",
     ]
 };
 

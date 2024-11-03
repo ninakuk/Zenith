@@ -52,7 +52,7 @@ export default function SettingsScreen() {
   const riveRef = useRef<RiveRef | null>(null);
   const { name, color, eyeType, setName, setColor, setEyeType } = useAvatar();
 
-  const[isCustomising, setIsCustomising] = useState<boolean>(false);
+  const [isCustomising, setIsCustomising] = useState<boolean>(false);
 
   useEffect(() => {
     //load the avatar settings when the component mounts
@@ -140,10 +140,10 @@ export default function SettingsScreen() {
         await saveAvatarSettings(updatedSettings);
 
       }
-     } catch (error) {
-        console.error("Error triggering touch animation or saving interaction count:", error);
-      }
-    };
+    } catch (error) {
+      console.error("Error triggering touch animation or saving interaction count:", error);
+    }
+  };
 
 
   const getColorForOption = (colorOption: number) => {
@@ -301,7 +301,8 @@ export default function SettingsScreen() {
         {/* Data sending */}
         <View style={styles.separator} />
 
-        <Text style={{ marginVertical: 10, marginLeft: 10 }}>All your journal entries and personal information stay completely private and are <Text style={{ fontWeight: 'bold' }}>NOT</Text> sent as data, or ever leave your device.</Text>
+        <Text style={{ fontSize:16 ,marginVertical: 10, marginLeft: 10 }}>At the end of the week long testing period, please press the below 'Send Data' button</Text>
+        <Text style={{ fontSize:16, marginVertical: 10, marginLeft: 10 }}>All your journal entries and personal information stay completely private and are <Text style={{ fontWeight: 'bold' }}>NOT</Text> sent as data, or ever leave your device.</Text>
 
         <TextInput
           style={styles.input}
@@ -366,8 +367,8 @@ const makeStyles = (colors: any) => StyleSheet.create({
   buttonText: {
     color: colors.text,
   },
-  disabledButton:{
-    opacity:0.5
+  disabledButton: {
+    opacity: 0.5
   },
   selectedButton: {
     backgroundColor: colors.border,

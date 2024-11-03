@@ -112,7 +112,7 @@ export default function HomeScreen() {
           >
           </Pressable>
           
-          <Text style={styles.text}>{name}</Text>
+          {/* <Text style={styles.text}>{name}</Text> */}
           <Text style={styles.greetingText}>{greetingPrompt}</Text>
 
         </View>
@@ -178,9 +178,9 @@ export default function HomeScreen() {
       fontWeight: "bold"
     },
     greetingText: {
-      fontSize: 14,
+      fontSize: 16,
       color: colors.text,
-      marginTop: 10,
+      margin: 15,
     },
   });
 
