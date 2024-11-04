@@ -23,7 +23,7 @@ interface ModalProps {
     emotionValue: number;
 }
 
-const ModalScreen: React.FC<ModalProps> = ({ onClose, isModalVisible, entryType, isEmotionEntry, prompt, emotionValue}) => {
+const ModalScreen: React.FC<ModalProps> = ({ onClose, isModalVisible, entryType, isEmotionEntry, prompt, emotionValue }) => {
 
     const riveRef = useRef<RiveRef | null>(null);
     const router = useRouter();
@@ -32,23 +32,9 @@ const ModalScreen: React.FC<ModalProps> = ({ onClose, isModalVisible, entryType,
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    //const [emotionValue, setEmotionValue] = useState(0);
-    //const [sliderTouched, setSliderTouched] = useState(false);
 
-
-    //const [isModalVisible, setModalVisible] = useState(false);
     const colors = useTheme().colors;
     const styles = useMemo(() => makeStyles(colors), [colors]);
-
-    // useFocusEffect(
-    //     useCallback(() => {
-    //         setTitle('');
-    //         setContent('');
-    //         //setEmotionValue(0);
-    //         //setSliderTouched(false);
-    //         selectedPromptRef.current = "";
-    //     }, [])
-    // )
 
     const handleCreateEntry = () => {
         if (title && content) {
@@ -67,7 +53,7 @@ const ModalScreen: React.FC<ModalProps> = ({ onClose, isModalVisible, entryType,
 
             const createdAt = new Date(); // Format: YYYY-MM-DDTHH:mm:ss.sssZ
 
-             createEntry(
+            createEntry(
                 title,
                 content,
                 sentimentScore,
@@ -104,19 +90,21 @@ const ModalScreen: React.FC<ModalProps> = ({ onClose, isModalVisible, entryType,
     useEffect(() => {
         //load the avatar settings when the component mounts
         const fetchAvatarSettings = async () => {
-          try {
-            if (riveRef.current) {
-              if (color !== null) riveRef.current.setInputState('State Machine 1', 'BodyColor', color);
-              if (eyeType !== null) riveRef.current.setInputState('State Machine 1', 'EyeType', eyeType);
+            try {
+                //riveRef.current?.reset()
+                if (isModalVisible && riveRef.current) {
+                    await new Promise(resolve => setTimeout(resolve, 10));
+                    if (color !== null) riveRef.current.setInputState('State Machine 1', 'BodyColor', color);
+                    if (eyeType !== null) riveRef.current.setInputState('State Machine 1', 'EyeType', eyeType);
+                }
+            } catch (error) {
+                console.error('Error loading avatar settings:', error);
             }
-          } catch (error) {
-            console.error('Error loading avatar settings:', error);
-          }
         };
-    
+
         fetchAvatarSettings();
-      }, [color, eyeType]);
-      
+    }, [color, eyeType, isModalVisible]);
+
     return (
         <Modal
             isVisible={isModalVisible}
@@ -124,55 +112,55 @@ const ModalScreen: React.FC<ModalProps> = ({ onClose, isModalVisible, entryType,
             animationOut="slideOutDown"
             backdropOpacity={0.5}
             onBackdropPress={toggleModal}
-            style={{ justifyContent: 'flex-end', margin: 0}}
+            style={{ justifyContent: 'flex-end', margin: 0 }}
         >
-        <View style={styles.modalContent}>
-            {/* Avatar and Prompt */}
-            <View style={styles.avatarAndPromptContainerModal}>
-                <RiveAnimation
-                    source={require('../../assets/animations/avatar_2.riv')}
-                    artboardName="Artboard"
-                    stateMachineName="State Machine 1"
-                    style={styles.avatar}
-                    ref={riveRef}
-                    fit={Fit.FitHeight}
-                />
-                {entryType === 'emotion' && prompt && (
-                    <Text style={styles.promptText}>{prompt}</Text>
-                )}
-                {entryType === 'freeform' && (
-                    <Text style={styles.promptText}>Im here for you!</Text>
-                )}
-            </View>
+            <View style={styles.modalContent}>
+                {/* Avatar and Prompt */}
+                <View style={styles.avatarAndPromptContainerModal}>
+                    <RiveAnimation
+                        source={require('../../assets/animations/avatar_2.riv')}
+                        artboardName="Artboard"
+                        stateMachineName="State Machine 1"
+                        style={styles.avatar}
+                        ref={riveRef}
+                        fit={Fit.FitHeight}
+                    />
+                    {entryType === 'emotion' && prompt && (
+                        <Text style={styles.promptText}>{prompt}</Text>
+                    )}
+                    {entryType === 'freeform' && (
+                        <Text style={styles.promptText}>Im here for you!</Text>
+                    )}
+                </View>
 
-            {/* Input Fields */}
-            <View style={{flexDirection: "column", width:"100%"}}>
-            <TextInput
-                style={styles.input}
-                placeholder="Title"
-                value={title}
-                onChangeText={setTitle}
-            />
-            <TextInput
-                style={[styles.input, { height: 150 }]}
-                placeholder=""
-                value={content}
-                onChangeText={setContent}
-                multiline={true}
-            />
-            </View>
+                {/* Input Fields */}
+                <View style={{ flexDirection: "column", width: "100%" }}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Title"
+                        value={title}
+                        onChangeText={setTitle}
+                    />
+                    <TextInput
+                        style={[styles.input, { height: 150 }]}
+                        placeholder=""
+                        value={content}
+                        onChangeText={setContent}
+                        multiline={true}
+                    />
+                </View>
 
-            <View style={{ flexDirection: "row", justifyContent: "flex-end", alignContent: "flex-end" }}>
-                <Button text="Save" onPress={() => { 
-                    handleCreateEntry(); 
-                    //toggleModal();
-                     }} />
-                <Button text="Cancel" onPress={() => {
-                    toggleModal();
-                }} />
-            </View>
+                <View style={{ flexDirection: "row", justifyContent: "flex-end", alignContent: "flex-end" }}>
+                    <Button text="Save" onPress={() => {
+                        handleCreateEntry();
+                        //toggleModal();
+                    }} />
+                    <Button text="Cancel" onPress={() => {
+                        toggleModal();
+                    }} />
+                </View>
 
-        </View>
+            </View>
         </Modal>
     );
 }
@@ -206,23 +194,23 @@ const makeStyles = (colors: any) => StyleSheet.create({
         color: colors.text,
         margin: 10,
         textAlignVertical: 'top'
-      },
-      promptText: {
+    },
+    promptText: {
         fontSize: 16,
         flexShrink: 1,
         margin: 10,
         width: '50%'
-      },
-      avatar: {
+    },
+    avatar: {
         width: '50%',
         marginRight: 0,
-      },
-      avatarAndPromptContainerModal: {
+    },
+    avatarAndPromptContainerModal: {
         flexDirection: 'row',
         alignItems: 'center',
         height: 200,
         marginBottom: 10
-      },
+    },
 });
 
 export default ModalScreen;

@@ -47,7 +47,7 @@ export default function SettingsScreen() {
   const [validIds, setValidIds] = useState<string[]>(ids);
   const isValidId = validIds.includes(journalId);
   const [loading, setLoading] = useState(false)
-  const GOOGLE_SHEETS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbylsXberqgbO-Xfsu5STPJznZNzTv1lMnHp0YyfOC6K2eDOtCwcA5yxxA5btuig2__W3w/exec';
+  const GOOGLE_SHEETS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwQE4xteik9NnXvRUNRRxoP9UUFnrHS0zF8cUNj_R170O2lIc-E56-YnSS0KUEaHHoUYw/exec';
 
   const riveRef = useRef<RiveRef | null>(null);
   const { name, color, eyeType, setName, setColor, setEyeType } = useAvatar();
@@ -108,7 +108,7 @@ export default function SettingsScreen() {
           customisationCount: currentSettings.customisationCount + 1
         };
 
-        // Save the updated settings
+        //save the updated settings
         await saveAvatarSettings(updatedSettings);
         setIsCustomising(false)
       } else {
@@ -193,7 +193,6 @@ export default function SettingsScreen() {
           sentimentAllW: entry.sentimentAllW,
         })),
         avatarSettings: {
-          name: avatarSettings.name,
           color: avatarSettings.color,
           eyeType: avatarSettings.eyeType,
           customisationCount: avatarSettings.customisationCount,
@@ -209,7 +208,7 @@ export default function SettingsScreen() {
         body: JSON.stringify(bodyData),
       });
 
-      const result = await response.text(); // Get the response as text for better debugging
+      const result = await response.text();
 
       if (response.ok) {
         Alert.alert('Success', 'Data has been successfully sent!');
@@ -301,7 +300,7 @@ export default function SettingsScreen() {
         {/* Data sending */}
         <View style={styles.separator} />
 
-        <Text style={{ fontSize:16 ,marginVertical: 10, marginLeft: 10 }}>At the end of the week long testing period, please press the below 'Send Data' button</Text>
+        <Text style={{ fontSize:16 ,marginVertical: 10, marginLeft: 10 }}>At the end of the week long testing period, please input the ID given to you and press the below 'Send Data' button</Text>
         <Text style={{ fontSize:16, marginVertical: 10, marginLeft: 10 }}>All your journal entries and personal information stay completely private and are <Text style={{ fontWeight: 'bold' }}>NOT</Text> sent as data, or ever leave your device.</Text>
 
         <TextInput

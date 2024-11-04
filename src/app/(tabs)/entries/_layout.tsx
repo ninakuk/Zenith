@@ -1,4 +1,5 @@
 import { COLORS } from "@/src/constants/Colors";
+import { useAvatar } from "@/src/context/AvatarContext";
 import { Feather } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
 import { Stack, useRouter } from "expo-router";
@@ -8,6 +9,8 @@ export default function EntriesStack() {
     const colorScheme = useColorScheme();
   const colors = useTheme().colors;
   const router = useRouter();
+  const { name } = useAvatar();
+
 
     return (
         <Stack>

@@ -145,8 +145,8 @@ const formatDate = (dateString: string) => {
 const makeStyles = (colors: any) => StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
-        backgroundColor: '#fff',
+        padding: 15,
+        backgroundColor: colors.background,
     },
     listContainer: {
         //...StyleSheet.absoluteFillObject,

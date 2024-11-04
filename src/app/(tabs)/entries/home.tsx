@@ -26,7 +26,7 @@ export default function HomeScreen() {
   const { name, color, eyeType, setName, setColor, setEyeType } = useAvatar();
 
   useEffect(() => {
-    // Load the avatar settings when the component mounts
+    //load the avatar settings when the component mounts
     const fetchAvatarSettings = async () => {
       try {
         if (riveRef.current) {
@@ -94,9 +94,12 @@ export default function HomeScreen() {
 
     return (
       <SafeAreaView style={styles.main}>
-        {/* List with Avatar in Header */}
+        {/* list with Avatar in Header */}
+        <View style={{flexDirection:"column"}}>
+
         <View style={styles.avatarContainer}>
           {/* Limit touchable area to avatar */}
+          <Text style={styles.nameText}>{name}</Text>
 
           <RiveAnimation
             source={require('../../../../assets/animations/avatar_2.riv')}
@@ -109,12 +112,10 @@ export default function HomeScreen() {
           <Pressable
             onPress={handleAvatarTouch}
             style={styles.pressableAvatar}
-          >
-          </Pressable>
-          
-          {/* <Text style={styles.text}>{name}</Text> */}
-          <Text style={styles.greetingText}>{greetingPrompt}</Text>
+          ></Pressable>
+                    <Text style={styles.greetingText}>{greetingPrompt}</Text>
 
+          </View>
         </View>
 
         {/* List of Journal Entries */}
@@ -149,6 +150,7 @@ export default function HomeScreen() {
       alignItems: 'center',
       backgroundColor: colors.background,
       width: '100%',
+      //paddingTop: 10,
     },
     avatar: {
       width: '100%',
@@ -177,10 +179,18 @@ export default function HomeScreen() {
       marginBottom: 15,
       fontWeight: "bold"
     },
+    nameText: {
+      fontSize: 13,
+      fontWeight: "bold",
+    },
     greetingText: {
       fontSize: 16,
       color: colors.text,
-      margin: 15,
+      margin: 10,
+      padding: 10,
+      paddingTop:10,
+      fontWeight:"bold",
+      textAlign:"center"
     },
   });
 

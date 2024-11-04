@@ -40,7 +40,13 @@ export default function TabLayout() {
         headerShown: useClientOnlyValue(false, true),
         headerStyle: {
           backgroundColor: Colors[colorScheme ?? 'light'].background,
-          height: 70,
+          height: 80,
+        },
+        headerTitleStyle: {
+          fontSize: 18,
+          textAlign: 'center',
+          overflow: 'hidden',
+          paddingHorizontal: 10,
         },
 
       }}>

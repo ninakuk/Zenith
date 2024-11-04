@@ -215,10 +215,8 @@ const AddEntryyy: React.FC = () => {
                         //onRequestClose={closeModal}
                         animationType="slide"
                         onRequestClose={() => {
-                            Alert.alert('Modal has been closed.');
                             setModalVisible(!isModalVisible);
-                        }}
-                    >
+                        }}>
                         <View>
                             {/* Avatar and Prompt */}
                             <View style={styles.avatarAndPromptContainerModal}>
@@ -296,7 +294,8 @@ const makeStyles = (colors: any) => StyleSheet.create({
     promptText: {
         fontSize: 16,
         flexShrink: 1,
-        margin: 10,
+        //margin: 10,
+        fontWeight:"bold",
     },
     header: {
         fontSize: 24,

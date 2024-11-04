@@ -31,7 +31,7 @@ const AddEntry: React.FC = () => {
   const [content, setContent] = useState('');
   const [emotionValue, setEmotionValue] = useState(0);
   const [sliderTouched, setSliderTouched] = useState(false);
-  const opacityAnim = useRef(new Animated.Value(1)).current;
+  const opacityAnim = useRef(new Animated.Value(0)).current;
 
   const [entryType, setEntryType] = useState<'emotion' | 'freeform' | null>(null);
   const isEmotionEntry = (entryType === 'emotion');
@@ -69,19 +69,12 @@ const AddEntry: React.FC = () => {
   }, [emotionValue, entryType]);
 
   useEffect(() => {
-    // Animate the opacity when sliderTouched changes
-    Animated.sequence([
-      Animated.timing(opacityAnim, {
-        toValue: 0,
-        duration: 200, // fade-out duration
-        useNativeDriver: true,
-      }),
+    //animate the opacity when sliderTouched changes
       Animated.timing(opacityAnim, {
         toValue: 1,
-        duration: 200, // fade-in duration
+        duration: 1000, 
         useNativeDriver: true,
-      }),
-    ]).start();
+      }).start();
   }, [sliderTouched, opacityAnim]);
 
 
@@ -89,7 +82,8 @@ const AddEntry: React.FC = () => {
   useEffect(() => {
     const fetchAvatarSettings = async () => {
       try {
-        if (riveRef.current) {
+        if(riveRef.current){
+        await new Promise(resolve => setTimeout(resolve, 100));
           if (color !== null) riveRef.current.setInputState('State Machine 1', 'BodyColor', color);
           if (eyeType !== null) riveRef.current.setInputState('State Machine 1', 'EyeType', eyeType);
         }
@@ -99,7 +93,7 @@ const AddEntry: React.FC = () => {
     };
 
     fetchAvatarSettings();
-  }, [color, eyeType]);
+  }, [color, eyeType, isModalVisible]);
 
   const handleAvatarTouch = () => {
     try {
@@ -130,20 +124,10 @@ const AddEntry: React.FC = () => {
               ref={riveRef}
               fit={Fit.FitHeight}
             />
-            {/* <Pressable
-              onPress={handleAvatarTouch}
-              style={styles.pressableAvatar}
-            ></Pressable> */}
-
-            {/* {sliderTouched ? (
-              <Text style={styles.promptText}>Do you need inspiration, or just wish to write freely ?</Text>
-            ) : (
-              <Text style={styles.promptText}>How are you feeling today ?</Text>
-            )} */}
 
             <Animated.Text style={[styles.promptText, { opacity: opacityAnim }]}>
               {sliderTouched
-                ? "Do you need inspiration, or just wish to write freely?"
+                ? "Do you need some inspiration, or just wish to write freely?"
                 : "How are you feeling today?"}
             </Animated.Text>
 
@@ -184,7 +168,7 @@ const AddEntry: React.FC = () => {
                 setContent('');
               }} />
 
-              <Button text="Freeform" onPress={() => {
+              <Button text="Write freely" onPress={() => {
                 setEntryType('freeform'); setModalVisible(true);
               }} />
 
@@ -197,6 +181,7 @@ const AddEntry: React.FC = () => {
         {entryType && (
           <EntryModal
             isModalVisible={isModalVisible}
+            key={isModalVisible ? 'visible' : 'hidden'}
             entryType={entryType}
             isEmotionEntry={isEmotionEntry}
             onClose={toggleModal}
@@ -244,14 +229,14 @@ const makeStyles = (colors: any) => StyleSheet.create({
   avatarAndPromptContainerModal: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 200,
+    height: 150,
     marginBottom: 10
   },
   promptText: {
     fontSize: 18,
     flexShrink: 1,
-    margin: 10,
-    width: '60%'
+    width: '60%',
+    fontWeight:"bold"
   },
   header: {
     fontSize: 24,
@@ -283,7 +268,7 @@ const makeStyles = (colors: any) => StyleSheet.create({
     marginBottom: 20,
   },
   avatar: {
-    width: '50%',
+    width: '40%',
     marginRight: 0,
   },
   promptSelection: {
