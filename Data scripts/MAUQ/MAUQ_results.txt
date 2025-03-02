@@ -1,0 +1,21 @@
+Overall MAUQ Score: 5.11 / 7
+Total Usability Score: 92.00
+
+Category-Wise MAUQ Scores:
+Ease of Use: 5.80 / 7
+Interface & Satisfaction: 5.29 / 7
+Usefulness: 4.33 / 7
+
+Per-Participant MAUQ Scores:
+Participant Participant ID: nan
+Participant {"ImportId":"QID1216974409_TEXT"}: nan
+Participant 39205: 6.28
+Participant 76435: 3.39
+Participant 58740: 5.67
+Participant 27560: 5.22
+Participant 91852: 4.11
+Participant 47061: 6.00
+
+Dark Mode vs. Non-Dark Mode Usability Comparison:
+Dark Mode Users Avg MAUQ: 4.39 / 7
+Non-Dark Mode Users Avg MAUQ: 5.83 / 7

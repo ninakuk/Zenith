@@ -1,0 +1,19 @@
+Overall Group Engagement Score: 3.35 / 5
+
+Overall Scores for Each Engagement Subscale:
+Focused Attention: 2.28 / 5
+Perceived Usability: 4.11 / 5
+Aesthetic Appeal: 3.56 / 5
+Reward Factor: 3.44 / 5
+
+Per-Participant Engagement Scores:
+Participant 39205: 4.33
+Participant 76435: 2.17
+Participant 58740: 3.50
+Participant 27560: 3.42
+Participant 91852: 2.75
+Participant 47061: 3.92
+
+Dark Mode vs. Non-Dark Mode Engagement Comparison:
+Dark Mode Users Avg Engagement: 2.81 / 5
+Non-Dark Mode Users Avg Engagement: 3.89 / 5

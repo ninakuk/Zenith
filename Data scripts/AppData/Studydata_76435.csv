@@ -1,0 +1,9 @@
+ID,Sentiment Score,Sentiment Word,Emotion slider score,Emotion slider word,Prompt used,time stamp,Is it emotion entry?,happy words,sad words,all emotion words,,Avatar Color,Avatar Eye Type,Avatar Customisation Count,Avatar Interaction Counter
+1730754391671,0,Neutral,2,Happy,I’m glad you had a good day! What’s something that made today feel special?,2024-11-04T21:06:31.671Z,TRUE,,,,,3,1,2,14
+1730788763002,-2,Sad,0,Neutral,,2024-11-05T06:39:23.002Z,FALSE,,failed,failed,,,,,
+1730826532915,1,Happy,2,Happy,,2024-11-05T17:08:52.915Z,FALSE,cool,,cool,,,,,
+1730839410322,-3,Sad,-3,Sad,,2024-11-05T20:43:30.322Z,FALSE,,hate,hate,,,,,
+1730926226855,0,Neutral,0,Neutral,,2024-11-06T20:50:26.855Z,FALSE,,,,,,,,
+1731010954786,-2,Sad,0,Neutral,,2024-11-07T20:22:34.786Z,FALSE,,nervous,nervous,,,,,
+1731101634056,-2,Sad,0,Neutral,,2024-11-08T21:33:54.056Z,FALSE,,tired,tired,,,,,
+1731223598379,-3,Sad,-1,Sad,,2024-11-10T07:26:38.379Z,FALSE,,"tired, forgot","tired, forgot",,,,,

@@ -1,0 +1,6 @@
+ID,Sentiment Score,Sentiment Word,Emotion slider score,Emotion slider word,Prompt used,time stamp,Is it emotion entry?,happy words,sad words,all emotion words,,Avatar Color,Avatar Eye Type,Avatar Customisation Count,Avatar Interaction Counter
+1730838436447,-3,Sad,-5,Sad,"Even on the hardest days, you’re stronger than you realize. What’s one thing that gave you hope today?",2024-11-05T20:27:16.447Z,FALSE,,die,die,,1,1,1,3
+1730980938025,0,Neutral,0,Neutral,,2024-11-07T12:02:18.025Z,FALSE,,,,,,,,
+1731083631282,0,Neutral,-2,Sad,,2024-11-08T16:33:51.282Z,FALSE,,,,,,,,
+1731254233032,0,Neutral,-1,Sad,"It sounds like today was a bit off, but you’ve kept going. What’s one thing that brought you peace?",2024-11-10T15:57:13.032Z,TRUE,,,,,,,,
+1731347803104,0,Neutral,-2,Sad,"I can tell today wasn’t perfect, but you’ve come far. What’s one moment you felt even a little lighter?",2024-11-11T17:56:43.104Z,TRUE,,,,,,,,

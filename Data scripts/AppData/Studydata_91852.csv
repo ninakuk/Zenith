@@ -1,0 +1,4 @@
+ID,Sentiment Score,Sentiment Word,Emotion slider score,Emotion slider word,Prompt used,time stamp,Is it emotion entry?,happy words,sad words,all emotion words,,Avatar Color,Avatar Eye Type,Avatar Customisation Count,Avatar Interaction Counter
+1730737662552,2,Happy,-2,Sad,"Even when things feel off, you’re doing your best. What helped you through today?",2024-11-04T16:27:42.551Z,TRUE,better,,better,,2,1,1,8
+1731351141879,6,Happy,3,Happy,It sounds like today was pretty great! What’s one thing that really made you smile?,2024-11-11T18:52:21.879Z,TRUE,"😁, happy, friend",,"😁, happy, friend",,,,,
+1731351238567,2,Happy,3,Happy,It’s wonderful that today went so well! What’s one moment you’ll want to remember?,2024-11-11T18:53:58.567Z,TRUE,"friend, cherish, friend",lonely,"friend, lonely, cherish, friend",,,,,

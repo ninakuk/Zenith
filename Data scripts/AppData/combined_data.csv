@@ -1,0 +1,40 @@
+ID,Sentiment Score,Sentiment Word,Emotion slider score,Emotion slider word,Prompt used,time stamp,Is it emotion entry?,happy words,sad words,all emotion words,Unnamed: 11,Avatar Color,Avatar Eye Type,Avatar Customisation Count,Avatar Interaction Counter
+
+27560,-3,Sad,-5,Sad,"Even on the hardest days, you’re stronger than you realize. What’s one thing that gave you hope today?",2024-11-05T20:27:16.447Z,False,,die,die,,1.0,1.0,1.0,3.0
+27560,0,Neutral,0,Neutral,,2024-11-07T12:02:18.025Z,False,,,,,,,,
+27560,0,Neutral,-2,Sad,,2024-11-08T16:33:51.282Z,False,,,,,,,,
+27560,0,Neutral,-1,Sad,"It sounds like today was a bit off, but you’ve kept going. What’s one thing that brought you peace?",2024-11-10T15:57:13.032Z,True,,,,,,,,
+27560,0,Neutral,-2,Sad,"I can tell today wasn’t perfect, but you’ve come far. What’s one moment you felt even a little lighter?",2024-11-11T17:56:43.104Z,True,,,,,,,,
+
+
+
+39205,7,Happy,2,Happy,You’re feeling good today! What’s something that made your day even better?,2024-11-04T12:06:34.401Z,True,"hopeful, confident, like, feeling",,"hopeful, confident, like, feeling",,3.0,1.0,4.0,76.0
+39205,14,Happy,2,Happy,Today was a solid day! What’s one thing that added to the good vibes?,2024-11-05T09:20:15.253Z,True,"hehe, nice, like, love, amazing",,"hehe, nice, like, love, amazing",,,,,
+39205,-3,Sad,-3,Sad,,2024-11-07T08:37:24.289Z,False,like,"waste, pain, hurt","waste, like, pain, hurt",,,,,
+39205,8,Happy,-5,Sad,"Even on the hardest days, you’re stronger than you realize. What’s one thing that gave you hope today?",2024-11-08T09:07:17.066Z,True,"hopeful, like, lol, won, hope","hard, horrible","hopeful, like, lol, won, hope, hard, horrible",,,,,
+39205,9,Happy,2,Happy,"I’m sure today wasn’t easy, but you’ve done well. What helped you lift your spirits, even if just a bit?",2024-11-10T19:57:08.179Z,True,"great, good, great",,"great, good, great",,,,,
+39205,1,Happy,3,Happy,,2024-11-11T11:05:03.324Z,False,"hopeful, warm",ill,"hopeful, ill, warm",,,,,
+
+
+47061,5,Happy,0,Neutral,"Even when things feel balanced, there’s always something to reflect on. What’s one small win today?",2024-11-05T09:56:50.432Z,True,"better, growing, confidence",,"better, growing, confidence",,3.0,1.0,2.0,8.0
+47061,11,Happy,2,Happy,,2024-11-10T23:47:30.908Z,False,"happy, like, big, happy, nice, appreciated, nice, nice","anxiety, worrying, scary, weird","anxiety, worrying, scary, happy, like, big, happy, nice, appreciated, nice, weird, nice",,,,,
+47061,6,Happy,-2,Sad,"I can tell today wasn’t perfect, but you’ve come far. What’s one moment you felt even a little lighter?",2024-11-12T13:44:43.386Z,True,"solving, trust, confidence, better, successful","problem, pressure","solving, problem, trust, confidence, better, successful, pressure",,,,,
+
+
+58740,0,Neutral,2,Happy,You’re feeling good today! What’s something that made your day even better?,2024-11-06T01:35:31.267Z,True,,,,,3.0,0.0,2.0,16.0
+58740,9,Happy,3,Happy,You’ve had a joyful day! What’s one thing that made you feel really happy?,2024-11-11T19:54:36.908Z,True,"delicious, delicious, great",,"delicious, delicious, great",,,,,
+
+
+76435,0,Neutral,2,Happy,I’m glad you had a good day! What’s something that made today feel special?,2024-11-04T21:06:31.671Z,True,,,,,3.0,1.0,2.0,14.0
+76435,-2,Sad,0,Neutral,,2024-11-05T06:39:23.002Z,False,,failed,failed,,,,,
+76435,1,Happy,2,Happy,,2024-11-05T17:08:52.915Z,False,cool,,cool,,,,,
+76435,-3,Sad,-3,Sad,,2024-11-05T20:43:30.322Z,False,,hate,hate,,,,,
+76435,0,Neutral,0,Neutral,,2024-11-06T20:50:26.855Z,False,,,,,,,,
+76435,-2,Sad,0,Neutral,,2024-11-07T20:22:34.786Z,False,,nervous,nervous,,,,,
+76435,-2,Sad,0,Neutral,,2024-11-08T21:33:54.056Z,False,,tired,tired,,,,,
+76435,-3,Sad,-1,Sad,,2024-11-10T07:26:38.379Z,False,,"tired, forgot","tired, forgot",,,,,
+
+
+91852,2,Happy,-2,Sad,"Even when things feel off, you’re doing your best. What helped you through today?",2024-11-04T16:27:42.551Z,True,better,,better,,2.0,1.0,1.0,8.0
+91852,6,Happy,3,Happy,It sounds like today was pretty great! What’s one thing that really made you smile?,2024-11-11T18:52:21.879Z,True,"😁, happy, friend",,"😁, happy, friend",,,,,
+91852,2,Happy,3,Happy,It’s wonderful that today went so well! What’s one moment you’ll want to remember?,2024-11-11T18:53:58.567Z,True,"friend, cherish, friend",lonely,"friend, lonely, cherish, friend",,,,,

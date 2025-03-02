@@ -1,0 +1,7 @@
+ID,Sentiment Score,Sentiment Word,Emotion slider score,Emotion slider word,Prompt used,time stamp,Is it emotion entry?,happy words,sad words,all emotion words,,Avatar Color,Avatar Eye Type,Avatar Customisation Count,Avatar Interaction Counter
+1730721994401,7,Happy,2,Happy,You’re feeling good today! What’s something that made your day even better?,2024-11-04T12:06:34.401Z,TRUE,"hopeful, confident, like, feeling",,"hopeful, confident, like, feeling",,3,1,4,76
+1730798415253,14,Happy,2,Happy,Today was a solid day! What’s one thing that added to the good vibes?,2024-11-05T09:20:15.253Z,TRUE,"hehe, nice, like, love, amazing",,"hehe, nice, like, love, amazing",,,,,
+1730968644289,-3,Sad,-3,Sad,,2024-11-07T08:37:24.289Z,FALSE,like,"waste, pain, hurt","waste, like, pain, hurt",,,,,
+1731056837067,8,Happy,-5,Sad,"Even on the hardest days, you’re stronger than you realize. What’s one thing that gave you hope today?",2024-11-08T09:07:17.066Z,TRUE,"hopeful, like, lol, won, hope","hard, horrible","hopeful, like, lol, won, hope, hard, horrible",,,,,
+1731268628179,9,Happy,2,Happy,"I’m sure today wasn’t easy, but you’ve done well. What helped you lift your spirits, even if just a bit?",2024-11-10T19:57:08.179Z,TRUE,"great, good, great",,"great, good, great",,,,,
+1731323103324,1,Happy,3,Happy,,2024-11-11T11:05:03.324Z,FALSE,"hopeful, warm",ill,"hopeful, ill, warm",,,,,
